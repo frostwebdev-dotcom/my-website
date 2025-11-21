@@ -446,7 +446,15 @@ function generateContractHTML() {
                 </div>
             </div>
 
-            <div style="text-align: center; margin-top: 80px;">
+            <!-- Additional Documentation Space -->
+            <div style="margin-top: 60px; padding: 20px; border: 1px dashed #ccc; min-height: 300px; background-color: #fafafa;">
+                <p style="margin: 0 0 15px 0; font-weight: bold; font-size: 11pt;">Additional Documentation / Notes:</p>
+                <p style="margin: 0; font-size: 9pt; color: #666; font-style: italic;">
+                    (This space is available for any additional documentation, terms, or notes that may be required for this specific agreement. Leave blank if not needed.)
+                </p>
+            </div>
+
+            <div style="text-align: center; margin-top: 60px;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="80" height="100" viewBox="0 0 80 100" style="display: inline-block; opacity: 0.4;">
                     <!-- Dome base -->
                     <ellipse cx="40" cy="85" rx="35" ry="8" fill="none" stroke="#000" stroke-width="1.5"/>
