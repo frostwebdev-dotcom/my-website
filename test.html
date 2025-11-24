@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+</head>
+<body>
+    <h1>Testing JavaScript Loading</h1>
+    <button onclick="testFunction()">Test Button</button>
+    <div id="output"></div>
+
+    <script src="contract-data.js"></script>
+    <script src="app.js"></script>
+    <script>
+        function testFunction() {
+            document.getElementById('output').innerHTML = 'Button works!<br>';
+            document.getElementById('output').innerHTML += 'contractFields exists: ' + (typeof contractFields !== 'undefined') + '<br>';
+            document.getElementById('output').innerHTML += 'startContract exists: ' + (typeof startContract !== 'undefined') + '<br>';
+            if (typeof contractFields !== 'undefined') {
+                document.getElementById('output').innerHTML += 'Number of fields: ' + contractFields.length + '<br>';
+            }
+        }
+        
+        // Test on load
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('output').innerHTML = 'Page loaded!<br>';
+            document.getElementById('output').innerHTML += 'contractFields loaded: ' + (typeof contractFields !== 'undefined') + '<br>';
+            document.getElementById('output').innerHTML += 'startContract loaded: ' + (typeof startContract !== 'undefined') + '<br>';
+        });
+    </script>
+</body>
+</html>
+

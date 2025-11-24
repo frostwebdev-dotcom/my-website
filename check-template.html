@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Template - Merge Fields Detector</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        .section {
+            background: white;
+            padding: 25px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .upload-area:hover {
+            background: #f0f0f0;
+            border-color: #764ba2;
+        }
+        .upload-area.dragover {
+            background: #e3f2fd;
+            border-color: #2196F3;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #764ba2;
+        }
+        #output {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 600px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        .merge-field {
+            background: #51cf66;
+            color: #000;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        .no-merge-field {
+            background: #ff6b6b;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .error {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔍 Template Checker - Merge Fields Detector</h1>
+        <p>Upload your Word template to check if merge fields are present</p>
+    </div>
+
+    <div class="section">
+        <h2>📤 Upload Your Word Template</h2>
+        <div class="upload-area" id="uploadArea">
+            <h3>📁 Drag & Drop Your Word File Here</h3>
+            <p>or</p>
+            <input type="file" id="fileInput" accept=".docx" style="display: none;">
+            <button onclick="document.getElementById('fileInput').click()">📂 Choose File</button>
+        </div>
+        <p id="fileName" style="margin-top: 10px; font-weight: bold;"></p>
+        <button id="checkBtn" onclick="checkTemplate()" style="display: none;">🔍 Check for Merge Fields</button>
+    </div>
+
+    <div class="section" id="resultsSection" style="display: none;">
+        <h2>📊 Results</h2>
+        <div id="results"></div>
+        <div id="output"></div>
+    </div>
+
+    <script src="https://unpkg.com/pizzip@3.1.6/dist/pizzip.js"></script>
+    
+    <script>
+        let templateFile = null;
+
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const fileName = document.getElementById('fileName');
+        const checkBtn = document.getElementById('checkBtn');
+        const resultsSection = document.getElementById('resultsSection');
+        const results = document.getElementById('results');
+        const output = document.getElementById('output');
+
+        // Drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        function handleFile(file) {
+            if (!file.name.endsWith('.docx')) {
+                alert('❌ Please upload a .docx file');
+                return;
+            }
+            templateFile = file;
+            fileName.textContent = '📄 File: ' + file.name;
+            checkBtn.style.display = 'inline-block';
+        }
+
+        async function checkTemplate() {
+            if (!templateFile) {
+                alert('❌ Please upload a file first');
+                return;
+            }
+
+            if (typeof PizZip === 'undefined') {
+                alert('❌ PizZip library not loaded. Please refresh the page.');
+                return;
+            }
+
+            try {
+                output.textContent = 'Checking template...\n\n';
+                resultsSection.style.display = 'block';
+
+                const arrayBuffer = await templateFile.arrayBuffer();
+                const zip = new PizZip(arrayBuffer);
+                const documentXml = zip.file('word/document.xml').asText();
+
+                // Extract all text
+                const textMatches = documentXml.match(/<w:t[^>]*>([^<]+)<\/w:t>/g);
+                
+                if (!textMatches) {
+                    results.innerHTML = '<div class="error">❌ Could not extract text from document</div>';
+                    return;
+                }
+
+                const fullText = textMatches
+                    .map(match => match.replace(/<w:t[^>]*>([^<]+)<\/w:t>/, '$1'))
+                    .join(' ');
+
+                // Look for merge fields
+                const mergeFieldPattern = /\{[a-z_]+\}/g;
+                const mergeFields = fullText.match(mergeFieldPattern);
+
+                // Display results
+                if (mergeFields && mergeFields.length > 0) {
+                    const uniqueFields = [...new Set(mergeFields)];
+                    
+                    results.innerHTML = `
+                        <div class="success">
+                            <h3>✅ MERGE FIELDS FOUND!</h3>
+                            <p><strong>Found ${uniqueFields.length} unique merge fields:</strong></p>
+                            <ul>
+                                ${uniqueFields.map(field => `<li><span class="merge-field">${field}</span></li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="warning">
+                            <strong>⚠️ If contract generation still doesn't work:</strong>
+                            <ol>
+                                <li>Make sure this is the SAME file in your project folder</li>
+                                <li>Check the file name is exactly: <code>ND FALL 2026 - CONTRACT - 9 Jan 2026 - 11 May 2026 (1).docx</code></li>
+                                <li>Make sure it's in the same folder as contract-generator.html</li>
+                            </ol>
+                        </div>
+                    `;
+
+                    output.textContent = '=== FULL TEMPLATE TEXT ===\n\n' + fullText;
+
+                } else {
+                    results.innerHTML = `
+                        <div class="error">
+                            <h3>❌ NO MERGE FIELDS FOUND!</h3>
+                            <p><strong>This is the problem!</strong></p>
+                            <p>Your template does NOT have merge fields like <code>{landlord_name}</code>, <code>{tenant_name}</code>, etc.</p>
+                            <p><strong>You need to add them!</strong></p>
+                        </div>
+                        <div class="warning">
+                            <h3>🔧 How to Fix:</h3>
+                            <ol>
+                                <li>Open your Word template</li>
+                                <li>Press <kbd>Ctrl + H</kbd> (Find & Replace)</li>
+                                <li>Replace values with merge fields:
+                                    <ul>
+                                        <li>Find: <code>Roma Rentals</code> → Replace: <code>{landlord_name}</code></li>
+                                        <li>Find: <code>Jennifer Hoover</code> → Replace: <code>{tenant_name}</code></li>
+                                        <li>Find: <code>11 May 2026</code> → Replace: <code>{lease_end_date}</code></li>
+                                        <li>etc.</li>
+                                    </ul>
+                                </li>
+                                <li>Save the file (Ctrl + S)</li>
+                                <li>Check again with this tool</li>
+                            </ol>
+                        </div>
+                    `;
+
+                    output.textContent = '=== TEMPLATE TEXT (showing what you need to replace) ===\n\n' + fullText;
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                results.innerHTML = `<div class="error">❌ Error checking template: ${error.message}</div>`;
+            }
+        }
+
+        // Check library on load
+        window.addEventListener('load', () => {
+            if (typeof PizZip === 'undefined') {
+                alert('⚠️ Library loading issue. Please refresh the page.');
+            }
+        });
+    </script>
+</body>
+</html>
+

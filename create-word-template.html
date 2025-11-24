@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Word Template - RomaRentals</title>
+    
+    <!-- DOCX Generation -->
+    <script src="https://unpkg.com/docx@7.8.2/build/index.js"></script>
+    
+    <!-- PDF.js for reading PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    
+    <!-- Contract Data -->
+    <script src="contract-data-full.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .step {
+            background: #f8f9fa;
+            padding: 30px;
+            margin: 20px 0;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .step h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        
+        .step p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .upload-area {
+            border: 3px dashed #667eea;
+            padding: 60px 40px;
+            text-align: center;
+            border-radius: 15px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 20px 0;
+        }
+        
+        .upload-area:hover {
+            background: #f8f9fa;
+            border-color: #764ba2;
+            transform: translateY(-2px);
+        }
+        
+        .upload-area.dragover {
+            background: #e8eaf6;
+            border-color: #764ba2;
+            transform: scale(1.02);
+        }
+        
+        .upload-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-block;
+            margin: 10px 5px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        
+        .btn-success:hover {
+            box-shadow: 0 10px 25px rgba(56, 239, 125, 0.4);
+        }
+        
+        #status {
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+            font-weight: 500;
+        }
+        
+        #status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 2px solid #bee5eb;
+            display: block;
+        }
+        
+        #status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+            display: block;
+        }
+        
+        #status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+            display: block;
+        }
+        
+        .info-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .info-box h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .info-box ul {
+            margin-left: 20px;
+            color: #856404;
+        }
+        
+        .info-box li {
+            margin: 5px 0;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📝 Word Template Generator</h1>
+            <p>Create a professional Microsoft Word template for your contracts</p>
+        </div>
+        
+        <div class="content">
+            <div class="step">
+                <h2>Step 1: Upload Your Contract PDF</h2>
+                <p>Upload your existing contract PDF. We'll extract the text and create a Word template.</p>
+                
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📄</div>
+                    <h3>Click or Drag PDF Here</h3>
+                    <p style="color: #999; margin-top: 10px;">ND FALL 2026 - CONTRACT - 9 Jan 2026 - 11 May 2026 (1).pdf</p>
+                    <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+                </div>
+            </div>
+            
+            <div id="status"></div>
+            
+            <div class="step hidden" id="step2">
+                <h2>Step 2: Generate Word Template</h2>
+                <p>Click the button below to create a Word template with merge fields for all 55 contract fields.</p>
+                
+                <div class="info-box">
+                    <h3>✨ What You'll Get:</h3>
+                    <ul>
+                        <li><strong>Professional Word Template (.docx)</strong></li>
+                        <li><strong>55 merge fields</strong> for easy data entry</li>
+                        <li><strong>Reusable forever</strong> - no dependencies</li>
+                        <li><strong>Save as PDF</strong> when ready for signatures</li>
+                        <li><strong>Compatible with all versions</strong> of Microsoft Word</li>
+                    </ul>
+                </div>
+                
+                <button class="btn btn-success" id="generateBtn" onclick="generateWordTemplate()">
+                    ✨ Generate Word Template
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="create-word-template.js"></script>
+</body>
+</html>
+

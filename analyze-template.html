@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyze Word Template</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .upload-area {
+            border: 2px dashed #ccc;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .upload-area:hover {
+            background: #f0f0f0;
+        }
+        #output {
+            white-space: pre-wrap;
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .btn {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>📄 Analyze Word Template</h1>
+    
+    <div class="upload-area" id="uploadArea">
+        <h2>Drop Word Template Here</h2>
+        <p>or click to browse</p>
+        <input type="file" id="fileInput" accept=".docx" style="display: none;">
+    </div>
+    
+    <button class="btn" id="analyzeBtn" disabled>🔍 Analyze Template</button>
+    
+    <h2>Template Content:</h2>
+    <div id="output">Upload a Word template to see its content...</div>
+
+    <script src="https://unpkg.com/pizzip@3.1.6/dist/pizzip.js"></script>
+    <script>
+        // Check if library loaded
+        window.addEventListener('load', () => {
+            console.log('PizZip loaded:', typeof PizZip !== 'undefined');
+            if (typeof PizZip === 'undefined') {
+                document.getElementById('output').textContent = 'ERROR: PizZip library failed to load. Please refresh the page.';
+            }
+        });
+    </script>
+    <script>
+        let templateFile = null;
+        
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const output = document.getElementById('output');
+        
+        uploadArea.addEventListener('click', () => fileInput.click());
+        
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                templateFile = e.target.files[0];
+                uploadArea.innerHTML = `<h2>✅ ${templateFile.name}</h2><p>Ready to analyze</p>`;
+                analyzeBtn.disabled = false;
+            }
+        });
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.background = '#e0e0e0';
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.background = '';
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.background = '';
+            if (e.dataTransfer.files.length > 0) {
+                templateFile = e.dataTransfer.files[0];
+                uploadArea.innerHTML = `<h2>✅ ${templateFile.name}</h2><p>Ready to analyze</p>`;
+                analyzeBtn.disabled = false;
+            }
+        });
+        
+        analyzeBtn.addEventListener('click', analyzeTemplate);
+        
+        async function analyzeTemplate() {
+            if (!templateFile) return;
+
+            // Check if PizZip is loaded
+            if (typeof PizZip === 'undefined') {
+                output.textContent = 'ERROR: PizZip library is not loaded.\n\nPlease refresh the page and try again.';
+                alert('PizZip library failed to load. Please refresh the page.');
+                return;
+            }
+
+            try {
+                output.textContent = 'Analyzing template...\n\n';
+                console.log('PizZip is available:', typeof PizZip);
+
+                const arrayBuffer = await templateFile.arrayBuffer();
+                console.log('File loaded, size:', arrayBuffer.byteLength);
+
+                const zip = new PizZip(arrayBuffer);
+                console.log('PizZip created successfully');
+                
+                // Extract document.xml (main content)
+                const documentXml = zip.file('word/document.xml').asText();
+                
+                // Extract text content
+                const textMatches = documentXml.match(/<w:t[^>]*>([^<]+)<\/w:t>/g);
+                
+                if (textMatches) {
+                    const fullText = textMatches
+                        .map(match => match.replace(/<w:t[^>]*>([^<]+)<\/w:t>/, '$1'))
+                        .join(' ');
+                    
+                    output.textContent = 'TEMPLATE CONTENT:\n\n' + fullText;
+                    
+                    // Also save to console for copying
+                    console.log('=== FULL TEMPLATE TEXT ===');
+                    console.log(fullText);
+                    console.log('=== END ===');
+                    
+                    // Try to identify potential fields
+                    output.textContent += '\n\n\n=== POTENTIAL FIELDS TO REPLACE ===\n\n';
+                    
+                    const patterns = [
+                        /\d{1,2}\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{4}/g,  // Dates
+                        /\$[\d,]+\.?\d*/g,  // Money
+                        /\d+\s+nights?/gi,  // Nights
+                        /\b[A-Z][a-z]+\s+[A-Z][a-z]+\b/g,  // Names (capitalized words)
+                        /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g,  // Phone numbers
+                        /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g,  // Emails
+                    ];
+                    
+                    patterns.forEach((pattern, index) => {
+                        const matches = fullText.match(pattern);
+                        if (matches) {
+                            const patternNames = ['Dates', 'Money', 'Nights', 'Names', 'Phone Numbers', 'Emails'];
+                            output.textContent += `\n${patternNames[index]}:\n`;
+                            const unique = [...new Set(matches)];
+                            unique.forEach(match => {
+                                output.textContent += `  - ${match}\n`;
+                            });
+                        }
+                    });
+                    
+                } else {
+                    output.textContent = 'Could not extract text from template.';
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                output.textContent = 'Error analyzing template: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
+

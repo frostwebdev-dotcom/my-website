@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Guide - Adding Merge Fields</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        .step {
+            background: white;
+            padding: 30px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .step h2 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .screenshot {
+            background: #f9f9f9;
+            border: 2px solid #ddd;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+        }
+        .before-after {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .before, .after {
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .before {
+            background: #fff3cd;
+            border-left: 4px solid #ff9800;
+        }
+        .after {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        .merge-field {
+            color: #0066cc;
+            font-weight: bold;
+            background: #e7f3ff;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        .highlight {
+            background: yellow;
+            padding: 2px 4px;
+        }
+        .keyboard {
+            display: inline-block;
+            background: #333;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 0 3px;
+        }
+        .tip {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .example-box {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            line-height: 1.8;
+        }
+        @media (max-width: 768px) {
+            .before-after {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📝 Visual Guide: Adding Merge Fields to Your Word Template</h1>
+        <p>Step-by-step instructions with examples</p>
+    </div>
+
+    <div class="step">
+        <h2>🎯 Step 1: Open Your Word Template</h2>
+        <p><strong>What to do:</strong></p>
+        <ol>
+            <li>Find your file: <code>ND FALL 2026 - CONTRACT - 9 Jan 2026 - 11 May 2026 (1).docx</code></li>
+            <li>Right-click on it</li>
+            <li>Select: "Open with Microsoft Word"</li>
+        </ol>
+        
+        <div class="tip">
+            <strong>💡 Tip:</strong> Make a backup copy first! Right-click → Copy → Paste → Rename to "BACKUP - [filename]"
+        </div>
+    </div>
+
+    <div class="step">
+        <h2>🔍 Step 2: Open Find & Replace</h2>
+        <p><strong>Keyboard shortcut:</strong> <span class="keyboard">Ctrl</span> + <span class="keyboard">H</span></p>
+        
+        <div class="screenshot">
+            <strong>Find & Replace Dialog Box:</strong><br><br>
+            ┌─────────────────────────────────────────┐<br>
+            │  Find and Replace                    ✕  │<br>
+            ├─────────────────────────────────────────┤<br>
+            │  Find what:  [                        ] │<br>
+            │                                         │<br>
+            │  Replace with: [                      ] │<br>
+            │                                         │<br>
+            │  [ Replace ]  [ Replace All ]  [ Find ] │<br>
+            └─────────────────────────────────────────┘
+        </div>
+    </div>
+
+    <div class="step">
+        <h2>✏️ Step 3: Replace Landlord Name</h2>
+        
+        <p><strong>Example: Replace "Roma Rentals SPQR" with merge field</strong></p>
+        
+        <div class="screenshot">
+            <strong>In Find & Replace dialog:</strong><br><br>
+            Find what: <span class="highlight">Roma Rentals SPQR</span><br>
+            Replace with: <span class="merge-field">{landlord_name}</span><br><br>
+            Then click: <strong>[ Replace All ]</strong>
+        </div>
+        
+        <div class="before-after">
+            <div class="before">
+                <h3>❌ Before:</h3>
+                <p>This agreement is made between <span class="highlight">Roma Rentals SPQR</span> (Landlord)...</p>
+            </div>
+            <div class="after">
+                <h3>✅ After:</h3>
+                <p>This agreement is made between <span class="merge-field">{landlord_name}</span> (Landlord)...</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="step">
+        <h2>📅 Step 4: Replace Dates</h2>
+        
+        <p><strong>Example 1: Replace start date</strong></p>
+        <div class="screenshot">
+            Find what: <span class="highlight">9 Jan 2026</span><br>
+            Replace with: <span class="merge-field">{lease_start_date}</span><br>
+            Click: <strong>[ Replace All ]</strong>
+        </div>
+        
+        <p><strong>Example 2: Replace end date</strong></p>
+        <div class="screenshot">
+            Find what: <span class="highlight">11 May 2026</span><br>
+            Replace with: <span class="merge-field">{lease_end_date}</span><br>
+            Click: <strong>[ Replace All ]</strong>
+        </div>
+        
+        <div class="before-after">
+            <div class="before">
+                <h3>❌ Before:</h3>
+                <p>Lease Period: From <span class="highlight">9 Jan 2026</span> to <span class="highlight">11 May 2026</span></p>
+            </div>
+            <div class="after">
+                <h3>✅ After:</h3>
+                <p>Lease Period: From <span class="merge-field">{lease_start_date}</span> to <span class="merge-field">{lease_end_date}</span></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="step">
+        <h2>👤 Step 5: Replace Tenant Information</h2>
+        
+        <div class="screenshot">
+            Find what: <span class="highlight">[Tenant Name]</span><br>
+            Replace with: <span class="merge-field">{tenant_name}</span><br>
+            Click: <strong>[ Replace All ]</strong>
+        </div>
+        
+        <div class="screenshot">
+            Find what: <span class="highlight">[Tenant Email]</span><br>
+            Replace with: <span class="merge-field">{tenant_email}</span><br>
+            Click: <strong>[ Replace All ]</strong>
+        </div>
+        
+        <div class="screenshot">
+            Find what: <span class="highlight">[Tenant Phone]</span><br>
+            Replace with: <span class="merge-field">{tenant_phone}</span><br>
+            Click: <strong>[ Replace All ]</strong>
+        </div>
+    </div>
+
+    <div class="step">
+        <h2>💰 Step 6: Replace Money Amounts</h2>
+        
+        <div class="screenshot">
+            Find what: <span class="highlight">$25</span> (rent per night)<br>
+            Replace with: <span class="merge-field">${rent_per_night}</span><br>
+            Click: <strong>[ Replace All ]</strong>
+        </div>
+        
+        <div class="warning">
+            <strong>⚠️ Warning:</strong> Be careful with numbers! Make sure you're replacing the right value.<br>
+            For example, don't replace "$25" if it appears in multiple places with different meanings.
+        </div>
+    </div>
+
+    <div class="step">
+        <h2>📋 Complete Example</h2>
+        
+        <h3>Original Contract (Before):</h3>
+        <div class="example-box">
+RENTAL AGREEMENT
+
+This agreement is made on <span class="highlight">2025-11-21</span> between <span class="highlight">Roma Rentals SPQR</span>
+(Landlord) and <span class="highlight">[Tenant Name]</span> (Tenant).
+
+Property Address: <span class="highlight">123 Main Street, Rome, Italy</span>
+
+Lease Period: From <span class="highlight">9 Jan 2026</span> to <span class="highlight">11 May 2026</span> (<span class="highlight">122</span> nights)
+
+Rent: <span class="highlight">$25</span> per night
+Total Rent: <span class="highlight">$3,050</span>
+
+Tenant Email: <span class="highlight">[Tenant Email]</span>
+Tenant Phone: <span class="highlight">[Tenant Phone]</span>
+        </div>
+        
+        <h3>With Merge Fields (After):</h3>
+        <div class="example-box">
+RENTAL AGREEMENT
+
+This agreement is made on <span class="merge-field">{contract_date}</span> between <span class="merge-field">{landlord_name}</span>
+(Landlord) and <span class="merge-field">{tenant_name}</span> (Tenant).
+
+Property Address: <span class="merge-field">{property_address}</span>
+
+Lease Period: From <span class="merge-field">{lease_start_date}</span> to <span class="merge-field">{lease_end_date}</span> (<span class="merge-field">{total_nights}</span> nights)
+
+Rent: $<span class="merge-field">{rent_per_night}</span> per night
+Total Rent: $<span class="merge-field">{total_rent}</span>
+
+Tenant Email: <span class="merge-field">{tenant_email}</span>
+Tenant Phone: <span class="merge-field">{tenant_phone}</span>
+        </div>
+    </div>
+
+    <div class="step">
+        <h2>💾 Step 7: Save Your Template</h2>
+        <p><strong>Keyboard shortcut:</strong> <span class="keyboard">Ctrl</span> + <span class="keyboard">S</span></p>
+        
+        <div class="tip">
+            <strong>💡 Tip:</strong> Keep the same filename, or rename to something like "contract-template.docx"
+        </div>
+    </div>
+
+    <div class="step">
+        <h2>✅ Step 8: Test Your Template</h2>
+        <ol>
+            <li>Go to: <a href="contract-generator.html">contract-generator.html</a></li>
+            <li>Fill in the form with test data</li>
+            <li>Click "Generate Contract"</li>
+            <li>Open the generated contract</li>
+            <li>Verify all merge fields are replaced with actual data</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <h2>📋 Quick Reference - All Merge Fields</h2>
+        <div class="example-box">
+<strong>Dates:</strong>
+{contract_date}
+{lease_start_date}
+{lease_end_date}
+{total_nights}
+
+<strong>Landlord:</strong>
+{landlord_name}
+{landlord_address_usa}
+{landlord_address_italy}
+{landlord_phone}
+{landlord_email}
+
+<strong>Tenant:</strong>
+{tenant_name}
+{tenant_email}
+{tenant_phone}
+{tenant_passport}
+{tenant_address}
+
+<strong>Property:</strong>
+{property_address}
+{property_type}
+{bedrooms}
+{bathrooms}
+{max_occupants}
+
+<strong>Money:</strong>
+{rent_per_night}
+{total_rent}
+{payment_method}
+{payment_due_date}
+{security_deposit}
+{deposit_due_date}
+{deposit_return_days}
+
+<strong>Emergency:</strong>
+{emergency_contact_name}
+{emergency_contact_phone}
+{emergency_contact_relation}
+        </div>
+    </div>
+
+    <div class="step">
+        <h2>🚨 Common Mistakes</h2>
+        
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr style="background: #f9f9f9;">
+                <th style="padding: 10px; border: 1px solid #ddd;">❌ Wrong</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">✅ Correct</th>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;"><code>[landlord_name]</code></td>
+                <td style="padding: 10px; border: 1px solid #ddd;"><code>{landlord_name}</code></td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;"><code>{{landlord_name}}</code></td>
+                <td style="padding: 10px; border: 1px solid #ddd;"><code>{landlord_name}</code></td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;"><code>{ landlord_name }</code></td>
+                <td style="padding: 10px; border: 1px solid #ddd;"><code>{landlord_name}</code></td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;"><code>{Landlord_Name}</code></td>
+                <td style="padding: 10px; border: 1px solid #ddd;"><code>{landlord_name}</code></td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;"><code>{landlordname}</code></td>
+                <td style="padding: 10px; border: 1px solid #ddd;"><code>{landlord_name}</code></td>
+            </tr>
+        </table>
+    </div>
+
+</body>
+</html>
+

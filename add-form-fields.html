@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Form Fields to PDF</title>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .field-list {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        .field-list h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .field-list ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .field-list li {
+            margin: 5px 0;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Add Form Fields to Contract PDF</h1>
+        <p class="subtitle">This tool will add editable form fields to your original PDF</p>
+        
+        <div class="field-list">
+            <h3>Form Fields to be Added:</h3>
+            <ul>
+                <li><strong>Page 1:</strong> effectiveDate, tenantName, tenantAddress, tenantCity, tenantPhone, tenantEmail</li>
+                <li><strong>Page 2:</strong> property1Address, property1Details, property2Address, property2Details, totalStudents, totalApartments, leaseStartDate, leaseEndDate, nights, rentPerNight</li>
+                <li><strong>Page 4:</strong> securityDeposit</li>
+                <li><strong>Page 6:</strong> petCleaningFee</li>
+            </ul>
+        </div>
+        
+        <button class="btn" onclick="addFormFields()">Add Form Fields to PDF</button>
+        
+        <div id="status" class="status"></div>
+    </div>
+
+    <script>
+        async function addFormFields() {
+            const btn = document.querySelector('.btn');
+            const status = document.getElementById('status');
+            
+            try {
+                btn.disabled = true;
+                btn.textContent = 'Processing...';
+                status.style.display = 'block';
+                status.className = 'status info';
+                status.textContent = 'Loading original PDF...';
+                
+                // Load the original PDF
+                const { PDFDocument, rgb, StandardFonts } = PDFLib;
+                
+                const existingPdfBytes = await fetch('ND FALL 2026 - CONTRACT - 9 Jan 2026 - 11 May 2026 (1).pdf')
+                    .then(res => {
+                        if (!res.ok) throw new Error('Could not load PDF template');
+                        return res.arrayBuffer();
+                    });
+                
+                status.textContent = 'Creating form fields...';
+                
+                const pdfDoc = await PDFDocument.load(existingPdfBytes);
+                const pages = pdfDoc.getPages();
+                const form = pdfDoc.getForm();
+                
+                // Embed font
+                const timesFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+                
+                // Get page dimensions
+                const page1 = pages[0];
+                const page2 = pages[1];
+                const page4 = pages[3];
+                const page6 = pages[5];
+                
+                const { width: p1w, height: p1h } = page1.getSize();
+                const { width: p2w, height: p2h } = page2.getSize();
+                const { width: p4w, height: p4h } = page4.getSize();
+                const { width: p6w, height: p6h } = page6.getSize();
+                
+                // PAGE 1 - Form Fields
+                form.createTextField('effectiveDate').addToPage(page1, { x: 220, y: p1h - 287, width: 200, height: 15, font: timesFont, fontSize: 11 });
+                form.createTextField('tenantName').addToPage(page1, { x: 150, y: p1h - 427, width: p1w - 300, height: 15, font: timesFont, fontSize: 11 });
+                form.createTextField('tenantAddress').addToPage(page1, { x: 150, y: p1h - 442, width: p1w - 300, height: 15, font: timesFont, fontSize: 11 });
+                form.createTextField('tenantCity').addToPage(page1, { x: 150, y: p1h - 457, width: p1w - 300, height: 15, font: timesFont, fontSize: 11 });
+                form.createTextField('tenantPhone').addToPage(page1, { x: 150, y: p1h - 472, width: p1w - 300, height: 15, font: timesFont, fontSize: 11 });
+                form.createTextField('tenantEmail').addToPage(page1, { x: 150, y: p1h - 487, width: p1w - 300, height: 15, font: timesFont, fontSize: 11 });
+                
+                // PAGE 2 - Form Fields
+                form.createTextField('property1').addToPage(page2, { x: 72, y: p2h - 197, width: p2w - 144, height: 15, font: timesFont, fontSize: 11 });
+                form.createTextField('property2').addToPage(page2, { x: 72, y: p2h - 212, width: p2w - 144, height: 15, font: timesFont, fontSize: 11 });
+                form.createTextField('totalLine').addToPage(page2, { x: 72, y: p2h - 232, width: 300, height: 15, font: timesFont, fontSize: 11 });
+                form.createTextField('clause1').addToPage(page2, { x: 72, y: p2h - 350, width: p2w - 144, height: 30, font: timesFont, fontSize: 11, multiline: true });
+                form.createTextField('clause2').addToPage(page2, { x: 72, y: p2h - 395, width: p2w - 144, height: 30, font: timesFont, fontSize: 11, multiline: true });
+                
+                // PAGE 4 - Security Deposit
+                form.createTextField('clause9').addToPage(page4, { x: 72, y: p4h - 280, width: p4w - 144, height: 80, font: timesFont, fontSize: 11, multiline: true });
+                
+                // PAGE 6 - Pet Fee
+                form.createTextField('clause18').addToPage(page6, { x: 72, y: p6h - 470, width: p6w - 144, height: 40, font: timesFont, fontSize: 11, multiline: true });
+                
+                status.textContent = 'Saving PDF with form fields...';
+                
+                // Save the PDF with form fields
+                const pdfBytes = await pdfDoc.save();
+                
+                // Download
+                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'contract-template-with-fields.pdf';
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                status.className = 'status success';
+                status.textContent = '✅ Success! PDF with form fields has been downloaded as "contract-template-with-fields.pdf"';
+                btn.textContent = 'Add Form Fields to PDF';
+                btn.disabled = false;
+                
+            } catch (error) {
+                console.error('Error:', error);
+                status.className = 'status error';
+                status.textContent = '❌ Error: ' + error.message;
+                btn.textContent = 'Add Form Fields to PDF';
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
+

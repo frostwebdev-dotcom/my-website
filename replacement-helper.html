@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replacement Helper - Your Template</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        .section {
+            background: white;
+            padding: 25px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .replacement-item {
+            background: #f9f9f9;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .find {
+            color: #d32f2f;
+            font-weight: bold;
+            background: #ffebee;
+            padding: 3px 8px;
+            border-radius: 3px;
+        }
+        .replace {
+            color: #1976d2;
+            font-weight: bold;
+            background: #e3f2fd;
+            padding: 3px 8px;
+            border-radius: 3px;
+        }
+        .copy-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 14px;
+        }
+        .copy-btn:hover {
+            background: #45a049;
+        }
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        h2 {
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .step-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔄 Replacement Helper for Your Template</h1>
+        <p>Based on your template analysis - exact replacements you need to make</p>
+    </div>
+
+    <div class="section">
+        <h2>📋 How to Use This Guide</h2>
+        <ol>
+            <li>Open your Word template: <code>ND FALL 2026 - CONTRACT - 9 Jan 2026 - 11 May 2026 (1).docx</code></li>
+            <li>Press <kbd>Ctrl + H</kbd> to open Find & Replace</li>
+            <li>For each item below:
+                <ul>
+                    <li>Copy the <span class="find">red text</span> into "Find what"</li>
+                    <li>Copy the <span class="replace">blue text</span> into "Replace with"</li>
+                    <li>Click "Replace All"</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h2><span class="step-number">1</span>Dates</h2>
+        
+        <div class="replacement-item">
+            <strong>Lease End Date:</strong><br>
+            Find: <span class="find">11 May 2026</span><br>
+            Replace: <span class="replace">{lease_end_date}</span>
+            <button class="copy-btn" onclick="copyToClipboard('{lease_end_date}')">📋 Copy</button>
+        </div>
+        
+        <div class="replacement-item">
+            <strong>Lease Start Date:</strong><br>
+            Find: <span class="find">9 Jan 2026</span><br>
+            Replace: <span class="replace">{lease_start_date}</span>
+            <button class="copy-btn" onclick="copyToClipboard('{lease_start_date}')">📋 Copy</button>
+        </div>
+        
+        <div class="replacement-item">
+            <strong>Total Nights:</strong><br>
+            Find: <span class="find">122 nights</span><br>
+            Replace: <span class="replace">{total_nights} nights</span>
+            <button class="copy-btn" onclick="copyToClipboard('{total_nights} nights')">📋 Copy</button>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2><span class="step-number">2</span>Contact Information</h2>
+        
+        <div class="replacement-item">
+            <strong>Landlord Email:</strong><br>
+            Find: <span class="find">tina@romarentals.net</span><br>
+            Replace: <span class="replace">{landlord_email}</span>
+            <button class="copy-btn" onclick="copyToClipboard('{landlord_email}')">📋 Copy</button>
+        </div>
+        
+        <div class="replacement-item">
+            <strong>Tenant Email:</strong><br>
+            Find: <span class="find">jhoover1@nd.edu</span><br>
+            Replace: <span class="replace">{tenant_email}</span>
+            <button class="copy-btn" onclick="copyToClipboard('{tenant_email}')">📋 Copy</button>
+        </div>
+        
+        <div class="replacement-item">
+            <strong>Landlord Phone:</strong><br>
+            Find: <span class="find">340.868.1386</span><br>
+            Replace: <span class="replace">{landlord_phone}</span>
+            <button class="copy-btn" onclick="copyToClipboard('{landlord_phone}')">📋 Copy</button>
+        </div>
+        
+        <div class="replacement-item">
+            <strong>Tenant Phone:</strong><br>
+            Find: <span class="find">760.201.9251</span><br>
+            Replace: <span class="replace">{tenant_phone}</span>
+            <button class="copy-btn" onclick="copyToClipboard('{tenant_phone}')">📋 Copy</button>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2><span class="step-number">3</span>Names</h2>
+        
+        <div class="replacement-item">
+            <strong>Landlord Name:</strong><br>
+            Find: <span class="find">Roma Rentals</span><br>
+            Replace: <span class="replace">{landlord_name}</span>
+            <button class="copy-btn" onclick="copyToClipboard('{landlord_name}')">📋 Copy</button>
+        </div>
+        
+        <div class="replacement-item">
+            <strong>Tenant Name:</strong><br>
+            Find: <span class="find">Jennifer Hoover</span><br>
+            Replace: <span class="replace">{tenant_name}</span>
+            <button class="copy-btn" onclick="copyToClipboard('{tenant_name}')">📋 Copy</button>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2><span class="step-number">4</span>Addresses</h2>
+        
+        <div class="warning">
+            <strong>⚠️ Important:</strong> For addresses, you need to look at your Word document and copy the EXACT address text, then replace it with the merge field.
+        </div>
+        
+        <div class="replacement-item">
+            <strong>Property Address:</strong><br>
+            Find: <span class="find">[Look in your Word doc for the complete property address]</span><br>
+            Replace: <span class="replace">{property_address}</span>
+            <button class="copy-btn" onclick="copyToClipboard('{property_address}')">📋 Copy</button>
+            <br><br>
+            <small>Might include: Twin Oaks, Valley Road, San Marcos</small>
+        </div>
+        
+        <div class="replacement-item">
+            <strong>Landlord USA Address:</strong><br>
+            Find: <span class="find">[Look for San Diego address in your Word doc]</span><br>
+            Replace: <span class="replace">{landlord_address_usa}</span>
+            <button class="copy-btn" onclick="copyToClipboard('{landlord_address_usa}')">📋 Copy</button>
+        </div>
+        
+        <div class="replacement-item">
+            <strong>Landlord Italy Address:</strong><br>
+            Find: <span class="find">[Look for Via Roma address in your Word doc]</span><br>
+            Replace: <span class="replace">{landlord_address_italy}</span>
+            <button class="copy-btn" onclick="copyToClipboard('{landlord_address_italy}')">📋 Copy</button>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2><span class="step-number">5</span>Money & Numbers</h2>
+        
+        <div class="warning">
+            <strong>⚠️ Important:</strong> Look in your Word document for the actual dollar amounts and replace them.
+        </div>
+        
+        <div class="replacement-item">
+            <strong>Rent Per Night:</strong><br>
+            Find: <span class="find">[Look for the nightly rate, e.g., "$25.00"]</span><br>
+            Replace: <span class="replace">${rent_per_night}</span>
+            <button class="copy-btn" onclick="copyToClipboard('${rent_per_night}')">📋 Copy</button>
+        </div>
+        
+        <div class="replacement-item">
+            <strong>Total Rent:</strong><br>
+            Find: <span class="find">[Look for total rent amount, e.g., "$3,050.00"]</span><br>
+            Replace: <span class="replace">${total_rent}</span>
+            <button class="copy-btn" onclick="copyToClipboard('${total_rent}')">📋 Copy</button>
+        </div>
+        
+        <div class="replacement-item">
+            <strong>Security Deposit:</strong><br>
+            Find: <span class="find">[Look for deposit amount, e.g., "$500.00"]</span><br>
+            Replace: <span class="replace">${security_deposit}</span>
+            <button class="copy-btn" onclick="copyToClipboard('${security_deposit}')">📋 Copy</button>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>⚠️ DO NOT REPLACE These!</h2>
+        <div class="warning">
+            <strong>These are legal terms and headings - keep them as is:</strong>
+            <ul>
+                <li>❌ "The Landlord" (legal term)</li>
+                <li>❌ "The Tenant" (legal term)</li>
+                <li>❌ "The Premises" (legal term)</li>
+                <li>❌ "Security Deposit" (heading)</li>
+                <li>❌ "Quiet Enjoyment" (legal clause)</li>
+                <li>❌ "Entire Agreement" (legal clause)</li>
+                <li>❌ "Lease Agreement" (heading)</li>
+                <li>❌ "Hazardous Materials" (legal clause)</li>
+            </ul>
+            <strong>Only replace actual data like specific names, dates, addresses, and amounts!</strong>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>✅ After Replacing</h2>
+        <div class="success">
+            <strong>Next steps:</strong>
+            <ol>
+                <li>Save your Word document (Ctrl + S)</li>
+                <li>Go to: <a href="contract-generator.html">contract-generator.html</a></li>
+                <li>Fill in the form with test data</li>
+                <li>Click "Generate Contract"</li>
+                <li>Open the generated contract and verify all fields are replaced correctly</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('✅ Copied to clipboard: ' + text);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                alert('❌ Failed to copy. Please copy manually.');
+            });
+        }
+    </script>
+</body>
+</html>
+

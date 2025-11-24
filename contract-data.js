@@ -1,135 +1,132 @@
-// Contract template questions based on the RomaRentals PDF
-const contractQuestions = [
+// Contract Questions - Based on Original PDF Template
+const contractFields = [
     {
         id: 'effectiveDate',
-        question: 'What is the effective date of this lease agreement?',
-        help: 'Example: 18 November 2025',
-        placeholder: 'Enter the date',
-        type: 'text'
+        label: 'Effective Date of Lease Agreement',
+        placeholder: 'Example: 18 November 2025',
+        type: 'text',
+        required: true
     },
     {
         id: 'tenantName',
-        question: 'What is the tenant\'s full name or organization name?',
-        help: 'Example: University of Notre Dame',
-        placeholder: 'Enter tenant name',
-        type: 'text'
+        label: 'Tenant Name (Organization or Individual)',
+        placeholder: 'Example: University of Notre Dame',
+        type: 'text',
+        required: true
     },
     {
         id: 'tenantAddress',
-        question: 'What is the tenant\'s address?',
-        help: 'Example: 11 Walsh Family Hall of Architecture',
-        placeholder: 'Enter street address',
-        type: 'text'
+        label: 'Tenant Street Address',
+        placeholder: 'Example: 11 Walsh Family Hall of Architecture',
+        type: 'text',
+        required: true
     },
     {
         id: 'tenantCity',
-        question: 'What is the tenant\'s city, state, and zip code?',
-        help: 'Example: Notre Dame, IN 46556 USA',
-        placeholder: 'Enter city, state, zip',
-        type: 'text'
+        label: 'Tenant City, State, ZIP',
+        placeholder: 'Example: Notre Dame, IN 46556',
+        type: 'text',
+        required: true
     },
     {
         id: 'tenantPhone',
-        question: 'What is the tenant\'s phone number?',
-        help: 'Example: +1 574 631 9033',
-        placeholder: 'Enter phone number',
-        type: 'text'
+        label: 'Tenant Phone Number',
+        placeholder: 'Example: +1 (574) 631-5000',
+        type: 'tel',
+        required: true
     },
     {
         id: 'tenantEmail',
-        question: 'What is the tenant\'s email address?',
-        help: 'Example: jhoover1@nd.edu',
-        placeholder: 'Enter email address',
-        type: 'email'
+        label: 'Tenant Email Address',
+        placeholder: 'Example: contact@nd.edu',
+        type: 'email',
+        required: true
     },
     {
         id: 'property1Address',
-        question: 'What is the address of the first property?',
-        help: 'Example: Via Roma Libera 23, Int. 9, 00153 Rome, Italy',
-        placeholder: 'Enter property address',
-        type: 'text'
+        label: 'Property 1 Address',
+        placeholder: 'Example: Via Dandolo 10, Scale A, Int. 2, 00153 Rome, Italy',
+        type: 'text',
+        required: true
     },
     {
         id: 'property1Details',
-        question: 'How many students and bedrooms for the first property?',
-        help: 'Example: 2 STUDENTS (2 Bedrooms, 1 Bathroom)',
-        placeholder: 'Enter details',
-        type: 'text'
+        label: 'Property 1 Details (Students, Bedrooms, Bathrooms)',
+        placeholder: 'Example: 2 STUDENTS (2 Bedrooms, 1 Bathroom)',
+        type: 'text',
+        required: true
     },
     {
         id: 'property2Address',
-        question: 'What is the address of the second property? (Leave blank if only one property)',
-        help: 'Example: Viale di Trastevere 66, Scale E, Int. 8, 00153 Rome, Italy',
-        placeholder: 'Enter property address or leave blank',
+        label: 'Property 2 Address (Optional - leave blank if only one property)',
+        placeholder: 'Example: Viale di Trastevere 66, Scale E, Int. 8, 00153 Rome, Italy',
         type: 'text',
-        optional: true
+        required: false
     },
     {
         id: 'property2Details',
-        question: 'How many students and bedrooms for the second property? (Leave blank if only one property)',
-        help: 'Example: 3 STUDENTS (3 Bedrooms, 2 Bathrooms)',
-        placeholder: 'Enter details or leave blank',
+        label: 'Property 2 Details (Optional)',
+        placeholder: 'Example: 3 STUDENTS (3 Bedrooms, 2 Bathrooms)',
         type: 'text',
-        optional: true
+        required: false
     },
     {
         id: 'totalStudents',
-        question: 'What is the total number of students?',
-        help: 'Example: 5',
-        placeholder: 'Enter number',
-        type: 'number'
+        label: 'Total Number of Students',
+        placeholder: 'Example: 5',
+        type: 'number',
+        required: true
     },
     {
         id: 'totalApartments',
-        question: 'What is the total number of apartments?',
-        help: 'Example: 2',
-        placeholder: 'Enter number',
-        type: 'number'
+        label: 'Total Number of Apartments',
+        placeholder: 'Example: 2',
+        type: 'number',
+        required: true
     },
     {
         id: 'leaseStartDate',
-        question: 'When does the lease term start?',
-        help: 'Example: 09 January 2026',
-        placeholder: 'Enter start date',
-        type: 'text'
+        label: 'Lease Start Date',
+        placeholder: 'Example: 9 January 2026',
+        type: 'text',
+        required: true
     },
     {
         id: 'leaseEndDate',
-        question: 'When does the lease term end?',
-        help: 'Example: 11 May 2026',
-        placeholder: 'Enter end date',
-        type: 'text'
+        label: 'Lease End Date',
+        placeholder: 'Example: 11 May 2026',
+        type: 'text',
+        required: true
     },
     {
-        id: 'numberOfNights',
-        question: 'How many nights is the rental period?',
-        help: 'Example: 122',
-        placeholder: 'Enter number of nights',
-        type: 'number'
+        id: 'rentalPeriod',
+        label: 'Rental Period (Number of Nights)',
+        placeholder: 'Example: 123',
+        type: 'number',
+        required: true
     },
     {
         id: 'rentPerNight',
-        question: 'What is the rent per student, per night (in Euros)?',
-        help: 'Example: 80.00',
-        placeholder: 'Enter amount',
-        type: 'number'
+        label: 'Rent Per Night Per Student (in Euros)',
+        placeholder: 'Example: 50.00',
+        type: 'number',
+        step: '0.01',
+        required: true
     },
     {
         id: 'securityDeposit',
-        question: 'What is the security deposit per tenant (in Euros)?',
-        help: 'Example: 500.00',
-        placeholder: 'Enter amount',
-        type: 'number'
+        label: 'Security Deposit Amount (in Euros)',
+        placeholder: 'Example: 1000.00',
+        type: 'number',
+        step: '0.01',
+        required: true
     },
     {
         id: 'petCleaningFee',
-        question: 'What is the pet cleaning fee (in Euros)?',
-        help: 'Example: 500.00',
-        placeholder: 'Enter amount',
-        type: 'number'
+        label: 'Pet Cleaning Fee (in Euros)',
+        placeholder: 'Example: 200.00',
+        type: 'number',
+        step: '0.01',
+        required: true
     }
 ];
-
-// Store user answers
-let userAnswers = {};
-

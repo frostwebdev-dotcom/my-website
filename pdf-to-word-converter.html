@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF to Word Converter - RomaRentals</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .info-box {
+            background: #f0f4ff;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+        
+        .info-box h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .info-box p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 12px;
+            padding: 60px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+        
+        .upload-area:hover {
+            background: #f0f4ff;
+            border-color: #764ba2;
+        }
+        
+        .upload-area.dragover {
+            background: #e0e8ff;
+            border-color: #764ba2;
+        }
+        
+        .upload-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .instructions {
+            background: #fff9e6;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 8px;
+        }
+        
+        .instructions h3 {
+            color: #ff9800;
+            margin-bottom: 15px;
+        }
+        
+        .instructions ol {
+            margin-left: 20px;
+            color: #555;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📄 PDF to Word Converter</h1>
+        <p class="subtitle">Convert your contract PDF to editable Word template</p>
+        
+        <div class="info-box">
+            <h3>🎯 Purpose</h3>
+            <p><strong>Step 1:</strong> Convert your PDF contract to Word format (preserving exact formatting)</p>
+            <p><strong>Step 2:</strong> Use the Word template with the main app to fill in data</p>
+            <p><strong>Result:</strong> Generated Word document looks EXACTLY like your PDF!</p>
+        </div>
+        
+        <div class="upload-area" id="uploadArea">
+            <div class="upload-icon">📤</div>
+            <h2>Drop PDF here or click to upload</h2>
+            <p style="color: #666; margin-top: 10px;">Your contract PDF file</p>
+            <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+        </div>
+        
+        <div style="text-align: center;">
+            <button class="btn" id="convertBtn" disabled>🔄 Convert to Word</button>
+        </div>
+        
+        <div class="status" id="status"></div>
+        
+        <div class="instructions">
+            <h3>📋 Instructions</h3>
+            <ol>
+                <li><strong>Upload your contract PDF</strong> using the area above</li>
+                <li><strong>Click "Convert to Word"</strong> - this uses a Python library to preserve formatting</li>
+                <li><strong>Download the Word template</strong> - it will look EXACTLY like your PDF</li>
+                <li><strong>Manually add merge fields</strong> in Word (e.g., replace "Roma Rentals" with {landlord_name})</li>
+                <li><strong>Save as template</strong> - use this with the main app</li>
+            </ol>
+        </div>
+    </div>
+    
+    <script>
+        let uploadedFile = null;
+        
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const convertBtn = document.getElementById('convertBtn');
+        const statusDiv = document.getElementById('status');
+        
+        // Click to upload
+        uploadArea.addEventListener('click', () => fileInput.click());
+        
+        // File selected
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+        
+        // Drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            if (e.dataTransfer.files.length > 0) {
+                handleFile(e.dataTransfer.files[0]);
+            }
+        });
+        
+        function handleFile(file) {
+            if (!file.name.endsWith('.pdf')) {
+                showStatus('error', 'Please upload a PDF file');
+                return;
+            }
+            
+            uploadedFile = file;
+            uploadArea.innerHTML = `
+                <div class="upload-icon">✅</div>
+                <h2>${file.name}</h2>
+                <p style="color: #666; margin-top: 10px;">Ready to convert</p>
+            `;
+            convertBtn.disabled = false;
+            showStatus('success', 'PDF uploaded successfully! Click "Convert to Word" to proceed.');
+        }
+        
+        convertBtn.addEventListener('click', convertToWord);
+        
+        async function convertToWord() {
+            if (!uploadedFile) {
+                showStatus('error', 'Please upload a PDF first');
+                return;
+            }
+            
+            convertBtn.disabled = true;
+            convertBtn.textContent = 'Converting...';
+            showStatus('info', 'Converting PDF to Word... This may take a moment.');
+            
+            try {
+                // Create FormData to send to server
+                const formData = new FormData();
+                formData.append('pdf', uploadedFile);
+                
+                // Send to server for conversion
+                const response = await fetch('/convert-pdf-to-word', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Server conversion failed. Please use manual method below.');
+                }
+                
+                // Download the converted file
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = uploadedFile.name.replace('.pdf', '-template.docx');
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                showStatus('success', '✅ Conversion successful! Word template downloaded. Open it and add merge fields like {landlord_name}.');
+                
+            } catch (error) {
+                console.error('Conversion error:', error);
+                showStatus('error', `❌ Automatic conversion not available. Please use MANUAL METHOD:\n\n1. Go to: https://www.adobe.com/acrobat/online/pdf-to-word.html\n2. Upload your PDF\n3. Download the Word file\n4. Manually add merge fields like {landlord_name}\n5. Use with main app`);
+            }
+            
+            convertBtn.disabled = false;
+            convertBtn.textContent = '🔄 Convert to Word';
+        }
+        
+        function showStatus(type, message) {
+            statusDiv.className = `status ${type}`;
+            statusDiv.textContent = message;
+            statusDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
+

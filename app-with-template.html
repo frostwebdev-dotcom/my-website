@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contract Generator - Word Template</title>
+    <link rel="stylesheet" href="styles-comprehensive.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Screen 1: Upload Template -->
+        <div class="screen active" id="template-screen">
+            <div class="screen-content">
+                <h1>📄 Contract Generator</h1>
+                <p class="subtitle">Upload your Word template to get started</p>
+                
+                <div class="info-box">
+                    <h3>🎯 How It Works</h3>
+                    <p><strong>Step 1:</strong> Convert your PDF to Word (preserves exact formatting)</p>
+                    <p><strong>Step 2:</strong> Add merge fields like {landlord_name} in the Word template</p>
+                    <p><strong>Step 3:</strong> Upload template here and fill the form</p>
+                    <p><strong>Result:</strong> Generated Word document looks EXACTLY like your PDF!</p>
+                </div>
+                
+                <div class="upload-zone" id="templateUploadZone">
+                    <div class="upload-icon">📤</div>
+                    <h2>Drop Word Template Here</h2>
+                    <p>or click to browse</p>
+                    <input type="file" id="templateInput" accept=".docx" style="display: none;">
+                </div>
+                
+                <div class="help-section">
+                    <h3>📋 Don't have a template yet?</h3>
+                    <ol>
+                        <li>Convert your PDF to Word: <a href="https://www.adobe.com/acrobat/online/pdf-to-word.html" target="_blank">Adobe PDF to Word</a></li>
+                        <li>Open the Word file</li>
+                        <li>Replace values with merge fields: {landlord_name}, {tenant_name}, etc.</li>
+                        <li>Save and upload here</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Screen 2: Fill Form -->
+        <div class="screen" id="form-screen">
+            <div class="screen-content">
+                <h1>✏️ Fill Contract Details</h1>
+                <p class="subtitle">Enter information for your contract</p>
+                
+                <div class="template-info" id="templateInfo">
+                    <strong>Template:</strong> <span id="templateName"></span>
+                </div>
+                
+                <div class="tab-navigation" id="tabNavigation">
+                    <!-- Tabs will be generated dynamically -->
+                </div>
+                
+                <div class="tab-content" id="tabContent">
+                    <!-- Form fields will be generated dynamically -->
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn btn-secondary" onclick="showScreen('template-screen')">
+                        ← Change Template
+                    </button>
+                    <button class="btn btn-success" onclick="generateContract()">
+                        📝 Generate Contract
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Screen 3: Success -->
+        <div class="screen" id="success-screen">
+            <div class="screen-content" style="text-align: center;">
+                <div style="font-size: 80px; margin-bottom: 20px;">✅</div>
+                <h1>Contract Generated!</h1>
+                <p class="subtitle">Your contract has been generated successfully</p>
+                
+                <div class="success-info">
+                    <h3>📄 Next Steps:</h3>
+                    <ol style="text-align: left; max-width: 500px; margin: 20px auto;">
+                        <li>Open the downloaded Word document</li>
+                        <li>Review all information</li>
+                        <li>Make any final edits if needed</li>
+                        <li>Save as PDF: File → Save As → PDF</li>
+                        <li>Send for signatures!</li>
+                    </ol>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn btn-secondary" onclick="showScreen('form-screen')">
+                        ← Edit Details
+                    </button>
+                    <button class="btn btn-primary" onclick="generateContract()">
+                        📝 Generate Again
+                    </button>
+                    <button class="btn btn-success" onclick="location.reload()">
+                        🔄 Start New Contract
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pizzip/3.1.4/pizzip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/docxtemplater/3.37.11/docxtemplater.min.js"></script>
+    <script src="https://unpkg.com/docx@7.8.2/build/index.js"></script>
+    
+    <!-- Contract Data -->
+    <script src="contract-data-full.js"></script>
+    
+    <!-- App Logic -->
+    <script src="app-with-template.js"></script>
+</body>
+</html>
+

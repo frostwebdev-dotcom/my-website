@@ -1,137 +1,176 @@
-# RomaRentals Contract Generator
+# 🏛️ RomaRentals Professional Contract Generator
 
-A professional, multi-contract generation system that helps you create rental agreements and other contracts quickly and accurately.
+A professional web-based contract generation system that creates PDF rental agreements matching your original template exactly.
 
-## How to Use
+## ✨ Features
 
-1. **Open the application**: Simply open `index.html` in your web browser
-2. **Select contract type**: Choose which type of contract you want to generate
-3. **Answer questions**: The system will ask you simple questions one at a time
-4. **Review your answers**: Check all your information before generating
-5. **Generate contract**: Get your completed contract with all the legal text intact
-6. **Print or save**: Use the print function to save as PDF
+- **Professional PDF Generation** - Uses jsPDF library for reliable, high-quality PDF output
+- **Exact Template Matching** - Generated PDFs match the original contract format precisely
+- **User-Friendly Interface** - Step-by-step form with progress tracking
+- **Validation** - Ensures all required fields are filled before generating
+- **Review Before Generate** - Review all information before creating the PDF
+- **No Server Required** - Runs entirely in the browser
+- **Mobile Responsive** - Works on desktop, tablet, and mobile devices
 
-## Features
+## 🚀 How to Use
 
-- ✅ **Multiple Contract Types** - Select from different contract templates
-- ✅ **Custom Logos** - RomaRentals dome logo on first and last page
-- ✅ **Simple Interface** - Beginner-friendly, no technical knowledge needed
-- ✅ **Step-by-Step Process** - One question at a time with helpful examples
-- ✅ **Progress Tracking** - Visual progress bar shows how far along you are
-- ✅ **Review Before Generating** - Check all your answers before creating the contract
-- ✅ **Exact Legal Text** - All legal language stays exactly as in the original PDF
-- ✅ **Professional PDF-Style Output** - Generated contracts look identical to the original
-- ✅ **DocuSign Compatible** - Signature lines ready for electronic signing
-- ✅ **Print-Ready** - Perfect formatting for printing or saving as PDF
-- ✅ **Fully Customizable** - Easy to modify utilities, cleaning, WiFi info per contract
-- ✅ **Expandable** - Easy to add more contract types in the future
+1. **Open the Application**
+   - Double-click `index.html` or open it in any modern web browser
+   - Chrome, Firefox, Edge, and Safari are all supported
 
-## What Information You'll Need
+2. **Fill in Contract Information**
+   - Click "Start New Contract"
+   - Fill in each field one at a time
+   - Use the "Next" and "Previous" buttons to navigate
+   - Optional fields can be left blank
 
-- Lease effective date
-- Tenant information (name, address, phone, email)
-- Property addresses and details
-- Number of students and apartments
-- Lease start and end dates
-- Rental period (number of nights)
-- Rent amount per night
-- Security deposit amount
-- Pet cleaning fee
+3. **Review Your Information**
+   - After filling all fields, click "Review"
+   - Check all information for accuracy
+   - Click "Edit Information" if you need to make changes
 
-**Note:** Signature date is NOT required - the contract shows "Date: ___" for DocuSign compatibility.
+4. **Generate PDF**
+   - Click "Generate PDF Contract"
+   - The PDF will be automatically downloaded to your computer
+   - File name format: `RomaRentals_Contract_YYYY-MM-DD.pdf`
 
-## Current Contract Types
+## 📋 Required Information
 
-### 1. Group Contract ✅
-Complete rental contract for furnished properties in Rome, Italy - designed for group rentals.
+The system will ask for the following information:
 
-**Features:**
-- Custom RomaRentals dome logo on first and last page
-- Professional 7-page layout matching original PDF exactly
-- No page numbers (clean, professional look)
-- Signature lines with "Date: ___" for DocuSign compatibility
-- Supports up to 2 properties per contract
+1. Effective Date of Lease Agreement
+2. Tenant Name (Organization or Individual)
+3. Tenant Street Address
+4. Tenant City, State, ZIP
+5. Tenant Phone Number
+6. Tenant Email Address
+7. Property 1 Address
+8. Property 1 Details (Students, Bedrooms, Bathrooms)
+9. Property 2 Address (Optional)
+10. Property 2 Details (Optional)
+11. Total Number of Students
+12. Total Number of Apartments
+13. Lease Start Date
+14. Lease End Date
+15. Rental Period (Number of Nights)
+16. Rent Per Night Per Student (in Euros)
+17. Security Deposit Amount (in Euros)
+18. Pet Cleaning Fee (in Euros)
 
-**Fields included:**
-- Effective date
-- Tenant information (name, address, phone, email)
-- Property addresses and details (supports up to 2 properties)
-- Number of students and apartments
-- Lease start and end dates
-- Rental period (number of nights)
-- Rent amount per night per student
-- Security deposit amount
-- Pet cleaning fee
+## 🎯 What Makes This System Professional
 
-### 2. Retail Contract 🔜
-Coming soon - for commercial retail space rentals.
+### Reliable PDF Generation
+- Uses **jsPDF**, the industry-standard JavaScript PDF library
+- No dependency on browser print functionality
+- Consistent output across all devices and browsers
+- Professional typography using Times New Roman font
 
-### 3. Short Term Contract 🔜
-Coming soon - for short-term vacation rentals.
+### Exact Template Matching
+- Font sizes match original PDF (11pt body, 18pt headers)
+- Proper margins (1 inch on all sides)
+- Correct spacing and line heights
+- All legal text preserved exactly as in original
 
-## Customization
+### User Experience
+- Clean, modern interface
+- Progress bar shows completion status
+- Field validation prevents errors
+- Review screen catches mistakes before generation
+- Responsive design works on all screen sizes
 
-**Yes, you can easily customize!** See `HOW_TO_CUSTOMIZE.md` for detailed instructions on:
-- Changing utilities information per contract type
-- Modifying cleaning details
-- Updating WiFi information
-- Adding new contract types
-- Changing any legal text or clauses
+## 🛠️ Technical Details
 
-## Files Included
+### Technologies Used
+- **HTML5** - Modern semantic markup
+- **CSS3** - Professional styling with animations
+- **JavaScript (ES6+)** - Application logic
+- **jsPDF 2.5.1** - PDF generation library
 
-- `index.html` - Main application interface with contract selection
-- `styles.css` - Professional styling and layout
-- `app.js` - Application logic and contract generation
-- `contract-data.js` - Contract questions and data structure
-- `README.md` - This documentation file
+### File Structure
+```
+CCCC/
+├── index.html          # Main application interface
+├── styles.css          # Professional styling
+├── app.js              # Application logic and PDF generation
+├── contract-data.js    # Contract field definitions
+└── README.md           # This file
+```
 
-## Technical Details
+### Browser Compatibility
+- ✅ Chrome 90+
+- ✅ Firefox 88+
+- ✅ Edge 90+
+- ✅ Safari 14+
 
-### Adding New Contract Types
+## 📝 Customization
 
-To add a new contract type:
+### Adding/Modifying Fields
 
-1. **Add a new card** in `index.html` in the contract selection screen
-2. **Create questions** in `contract-data.js` for the new contract
-3. **Add generation function** in `app.js` to create the contract HTML
-4. **Update the selection handler** to route to the new contract
+Edit `contract-data.js` to add or modify form fields:
 
-### PDF-Style Formatting
+```javascript
+{
+    id: 'fieldName',
+    label: 'Field Label',
+    placeholder: 'Example: Sample value',
+    type: 'text',  // or 'number', 'email', 'tel'
+    required: true  // or false for optional fields
+}
+```
 
-The generated contracts use:
-- Times New Roman font (standard for legal documents)
-- Proper page breaks
-- Professional spacing and margins
-- Exact text from original PDFs
-- Print-optimized CSS
+### Modifying Contract Text
 
-## Important Notes
+Edit the `generateContract()` function in `app.js` to modify the contract clauses and legal text.
 
-- ✅ The system uses the **exact legal text** from your original PDF
-- ✅ **No legal clauses** are modified or changed
-- ✅ Only **variable fields** (names, dates, amounts) are filled in
-- ✅ All **original formatting** is preserved
-- ✅ **Client-side only** - All data stays in your browser, nothing is sent anywhere
+### Styling Changes
 
-## Browser Compatibility
+Edit `styles.css` to customize colors, fonts, and layout.
 
-Works best in modern browsers:
-- ✅ Chrome / Edge (Recommended)
-- ✅ Firefox
-- ✅ Safari
+## 🔒 Privacy & Security
 
-## Support
+- **No Data Storage** - All data stays in your browser
+- **No Server Communication** - Everything runs locally
+- **No Tracking** - No analytics or tracking scripts
+- **Secure** - No external dependencies except jsPDF CDN
 
-The interface guides you with:
-- Clear, simple questions
-- Helpful examples for each field
-- Easy back/next navigation
-- Progress tracking
-- Review screen before final generation
-- Print-friendly output
+## 💡 Tips for Best Results
+
+1. **Have Information Ready** - Gather all required information before starting
+2. **Use Consistent Formatting** - Follow the placeholder examples for dates and addresses
+3. **Review Carefully** - Always review information before generating the PDF
+4. **Save Your PDFs** - Download and save generated contracts immediately
+5. **Test First** - Generate a test contract to familiarize yourself with the system
+
+## 🐛 Troubleshooting
+
+### PDF Not Downloading
+- Check if your browser is blocking downloads
+- Ensure JavaScript is enabled
+- Try a different browser
+
+### Fields Not Saving
+- Make sure to click "Next" after filling each field
+- Don't refresh the page while filling the form
+
+### Layout Issues
+- Clear your browser cache
+- Try zooming to 100%
+- Use a modern browser
+
+## 📞 Support
+
+For issues or questions:
+1. Check this README file
+2. Review the original PDF template
+3. Contact your developer
+
+## 📄 License
+
+This system is proprietary software created for RomaRentals.
 
 ---
 
-**Privacy Note**: This is a 100% client-side application. All your data stays in your browser and is never sent to any server.
+**Version:** 1.0.0  
+**Last Updated:** November 2025  
+**Created for:** RomaRentals SPQR LLC
 

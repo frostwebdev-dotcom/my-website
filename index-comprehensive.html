@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive PDF Contract Editor - RomaRentals</title>
+    
+    <!-- PDF Libraries -->
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    
+    <!-- DOCX Generation -->
+    <script src="https://unpkg.com/docx@7.8.2/build/index.js"></script>
+
+    <link rel="stylesheet" href="styles-comprehensive.css">
+
+    <!-- Contract Data Structure (55 fields in 12 tabs) -->
+    <script src="contract-data-full.js"></script>
+</head>
+<body>
+    <!-- Main Container -->
+    <div id="app">
+        
+        <!-- Screen 1: Upload PDF -->
+        <div id="upload-screen" class="screen active">
+            <div class="container">
+                <div class="header">
+                    <h1>📄 Comprehensive PDF Contract Editor</h1>
+                    <p class="subtitle">Upload, Analyze, Edit, and Generate Perfect PDFs</p>
+                </div>
+                
+                <div class="upload-area" id="upload-area">
+                    <div class="upload-icon">📁</div>
+                    <h2>Upload Your Contract PDF</h2>
+                    <p>Drag and drop your PDF file here, or click to browse</p>
+                    <input type="file" id="pdf-upload" accept=".pdf" hidden>
+                    <button class="btn btn-primary" onclick="document.getElementById('pdf-upload').click()">
+                        Choose PDF File
+                    </button>
+                </div>
+                
+                <div id="upload-status" class="status-message" style="display: none;"></div>
+                
+                <div class="features">
+                    <h3>✨ What This System Does:</h3>
+                    <div class="feature-grid">
+                        <div class="feature-item">
+                            <span class="feature-icon">🔍</span>
+                            <h4>Analyzes PDF Structure</h4>
+                            <p>Extracts all text, positions, fonts, and formatting</p>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">📝</span>
+                            <h4>Detects Editable Fields</h4>
+                            <p>Identifies dates, names, addresses, amounts automatically</p>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">🎨</span>
+                            <h4>Preserves Style</h4>
+                            <p>Maintains exact fonts, colors, spacing, and layout</p>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">✅</span>
+                            <h4>No Overlapping Text</h4>
+                            <p>Perfectly replaces text without any overlapping</p>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">📋</span>
+                            <h4>Organized Tabs</h4>
+                            <p>Groups fields logically for easy editing</p>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">💾</span>
+                            <h4>Save Templates</h4>
+                            <p>Reuse field mappings for similar contracts</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Screen 2: Analyzing PDF -->
+        <div id="analyzing-screen" class="screen">
+            <div class="container">
+                <div class="analyzing-content">
+                    <div class="spinner"></div>
+                    <h2>🔍 Analyzing Your PDF...</h2>
+                    <p id="analysis-status">Reading PDF structure...</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <div id="analysis-details" class="analysis-details"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Screen 3: Edit Fields (Tabs) -->
+        <div id="edit-screen" class="screen">
+            <div class="container-full">
+                <div class="header">
+                    <h1>✏️ Edit Contract Fields</h1>
+                    <p class="subtitle">Modify any field - changes will be applied to the final PDF</p>
+                </div>
+                
+                <div class="editor-layout">
+                    <!-- Left: PDF Preview -->
+                    <div class="pdf-preview-panel">
+                        <h3>📄 Original PDF Preview</h3>
+                        <div id="pdf-preview-container" class="pdf-preview">
+                            <!-- PDF pages will be rendered here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Right: Tabbed Form -->
+                    <div class="form-panel">
+                        <div class="tab-navigation" id="tab-navigation">
+                            <!-- Tabs will be generated dynamically -->
+                        </div>
+                        
+                        <div class="tab-content" id="tab-content">
+                            <!-- Tab content will be generated dynamically -->
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button class="btn btn-secondary" onclick="showScreen('upload-screen')">
+                                ← Upload Different PDF
+                            </button>
+                            <button class="btn btn-success" onclick="generateDraftDocument()" style="font-size: 18px; padding: 15px 30px;">
+                                📝 Generate Contract (DOCX)
+                            </button>
+                        </div>
+                        <p style="text-align: center; color: #666; margin-top: 15px; font-size: 14px; padding: 0 20px;">
+                            💡 <strong>Tip:</strong> Open the Word document and save as PDF when ready for signatures
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Screen 4: Success -->
+        <div id="success-screen" class="screen">
+            <div class="container">
+                <div class="success-content">
+                    <div class="success-icon">✅</div>
+                    <h1>PDF Generated Successfully!</h1>
+                    <p>Your contract has been generated and downloaded.</p>
+                    
+                    <div class="success-details">
+                        <p><strong>File:</strong> <span id="generated-filename"></span></p>
+                        <p><strong>Date:</strong> <span id="generated-date"></span></p>
+                    </div>
+                    
+                    <div class="success-actions">
+                        <button class="btn btn-primary" onclick="showScreen('edit-screen')">
+                            ✏️ Edit Again
+                        </button>
+                        <button class="btn btn-secondary" onclick="showScreen('upload-screen')">
+                            📁 Upload New PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <script src="app-comprehensive.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Contract Generator System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #667eea;
+        }
+        .test-item {
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #ccc;
+            background: #f9f9f9;
+        }
+        .test-item.pass {
+            border-left-color: #4CAF50;
+            background: #f1f8f4;
+        }
+        .test-item.fail {
+            border-left-color: #f44336;
+            background: #fef1f0;
+        }
+        .test-item.pending {
+            border-left-color: #ff9800;
+            background: #fff8f0;
+        }
+        .status {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .pass .status { color: #4CAF50; }
+        .fail .status { color: #f44336; }
+        .pending .status { color: #ff9800; }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .info {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-card">
+        <h1>🧪 System Test - Contract Generator</h1>
+        <p>This page will test if your contract generator system is working correctly.</p>
+        
+        <button onclick="runAllTests()">▶️ Run All Tests</button>
+        <button onclick="location.reload()">🔄 Reset</button>
+    </div>
+    
+    <div class="test-card">
+        <h2>Test Results:</h2>
+        <div id="results">
+            <div class="test-item pending">
+                <span class="status">⏳ PENDING</span>
+                Click "Run All Tests" to start
+            </div>
+        </div>
+    </div>
+    
+    <div class="test-card" id="instructions" style="display: none;">
+        <h2>📋 What to Do Next:</h2>
+        <div id="nextSteps"></div>
+    </div>
+    
+    <script src="https://unpkg.com/pizzip@3.1.6/dist/pizzip.js"></script>
+    <script src="https://unpkg.com/docxtemplater@3.42.0/build/docxtemplater.js"></script>
+    
+    <script>
+        const results = document.getElementById('results');
+        const instructions = document.getElementById('instructions');
+        const nextSteps = document.getElementById('nextSteps');
+        
+        let testResults = [];
+        
+        async function runAllTests() {
+            results.innerHTML = '<div class="test-item pending"><span class="status">⏳ RUNNING</span>Running tests...</div>';
+            testResults = [];
+            
+            // Test 1: Check if libraries are loaded
+            await test1_CheckLibraries();
+            
+            // Test 2: Check if template file exists
+            await test2_CheckTemplateFile();
+            
+            // Test 3: Test creating a simple Word document
+            await test3_CreateSimpleDoc();
+            
+            // Show results
+            displayResults();
+        }
+        
+        async function test1_CheckLibraries() {
+            const pizzipLoaded = typeof PizZip !== 'undefined';
+            const docxtemplaterLoaded = typeof Docxtemplater !== 'undefined' || typeof docxtemplater !== 'undefined';
+            
+            if (pizzipLoaded && docxtemplaterLoaded) {
+                testResults.push({
+                    name: 'Libraries Loaded',
+                    status: 'pass',
+                    message: '✅ PizZip and Docxtemplater are loaded correctly'
+                });
+            } else {
+                testResults.push({
+                    name: 'Libraries Loaded',
+                    status: 'fail',
+                    message: `❌ Missing libraries: ${!pizzipLoaded ? 'PizZip ' : ''}${!docxtemplaterLoaded ? 'Docxtemplater' : ''}`
+                });
+            }
+        }
+        
+        async function test2_CheckTemplateFile() {
+            try {
+                const response = await fetch('ND FALL 2026 - CONTRACT - 9 Jan 2026 - 11 May 2026 (1).docx');
+                
+                if (response.ok) {
+                    const size = (await response.arrayBuffer()).byteLength;
+                    testResults.push({
+                        name: 'Template File Exists',
+                        status: 'pass',
+                        message: `✅ Template file found (${(size / 1024).toFixed(2)} KB)`
+                    });
+                } else {
+                    testResults.push({
+                        name: 'Template File Exists',
+                        status: 'fail',
+                        message: '❌ Template file not found in the same folder'
+                    });
+                }
+            } catch (error) {
+                testResults.push({
+                    name: 'Template File Exists',
+                    status: 'fail',
+                    message: '❌ Error loading template: ' + error.message
+                });
+            }
+        }
+        
+        async function test3_CreateSimpleDoc() {
+            try {
+                const DocxTemplater = typeof Docxtemplater !== 'undefined' ? Docxtemplater : docxtemplater;
+                
+                // Create a simple test document
+                const response = await fetch('ND FALL 2026 - CONTRACT - 9 Jan 2026 - 11 May 2026 (1).docx');
+                const templateBuffer = await response.arrayBuffer();
+                
+                const zip = new PizZip(templateBuffer);
+                const doc = new DocxTemplater(zip, {
+                    paragraphLoop: true,
+                    linebreaks: true,
+                });
+                
+                // Test data
+                const testData = {
+                    landlord_name: 'TEST LANDLORD',
+                    tenant_name: 'TEST TENANT',
+                    lease_start_date: '2026-01-01',
+                    lease_end_date: '2026-12-31'
+                };
+                
+                doc.setData(testData);
+                doc.render();
+                
+                const blob = doc.getZip().generate({
+                    type: 'blob',
+                    mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                });
+                
+                testResults.push({
+                    name: 'Generate Test Document',
+                    status: 'pass',
+                    message: `✅ Successfully generated test document (${(blob.size / 1024).toFixed(2)} KB)`,
+                    blob: blob
+                });
+                
+            } catch (error) {
+                testResults.push({
+                    name: 'Generate Test Document',
+                    status: 'fail',
+                    message: '❌ Error generating document: ' + error.message
+                });
+            }
+        }
+        
+        function displayResults() {
+            results.innerHTML = '';
+            
+            const passCount = testResults.filter(t => t.status === 'pass').length;
+            const failCount = testResults.filter(t => t.status === 'fail').length;
+            const total = testResults.length;
+            
+            testResults.forEach(test => {
+                const div = document.createElement('div');
+                div.className = `test-item ${test.status}`;
+                div.innerHTML = `
+                    <span class="status">${test.status === 'pass' ? '✅ PASS' : '❌ FAIL'}</span>
+                    <strong>${test.name}</strong><br>
+                    <small>${test.message}</small>
+                `;
+                
+                if (test.blob) {
+                    const btn = document.createElement('button');
+                    btn.textContent = '📥 Download Test Document';
+                    btn.onclick = () => {
+                        const url = URL.createObjectURL(test.blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'TEST-CONTRACT.docx';
+                        a.click();
+                        URL.revokeObjectURL(url);
+                    };
+                    div.appendChild(document.createElement('br'));
+                    div.appendChild(btn);
+                }
+                
+                results.appendChild(div);
+            });
+            
+            // Summary
+            const summary = document.createElement('div');
+            summary.className = `test-item ${failCount === 0 ? 'pass' : 'fail'}`;
+            summary.innerHTML = `
+                <h3>Summary: ${passCount}/${total} tests passed</h3>
+                ${failCount === 0 ? 
+                    '<p>🎉 All tests passed! Your system is working correctly.</p>' : 
+                    '<p>⚠️ Some tests failed. See instructions below.</p>'
+                }
+            `;
+            results.appendChild(summary);
+            
+            // Show next steps
+            showNextSteps(passCount, failCount);
+        }
+        
+        function showNextSteps(passCount, failCount) {
+            instructions.style.display = 'block';
+            
+            if (failCount === 0) {
+                nextSteps.innerHTML = `
+                    <div class="info">
+                        <h3>✅ System is Working!</h3>
+                        <p><strong>Your contract generator is ready to use!</strong></p>
+                        
+                        <h4>Next Steps:</h4>
+                        <ol>
+                            <li><strong>Add merge fields to your template:</strong>
+                                <ul>
+                                    <li>Open: <code>ND FALL 2026 - CONTRACT - 9 Jan 2026 - 11 May 2026 (1).docx</code></li>
+                                    <li>Replace values with merge fields like <code>{landlord_name}</code></li>
+                                    <li>See SETUP_GUIDE.md for complete field list</li>
+                                </ul>
+                            </li>
+                            <li><strong>Use the contract generator:</strong>
+                                <ul>
+                                    <li>Go to: <a href="contract-generator.html">contract-generator.html</a></li>
+                                    <li>Fill in the tabs</li>
+                                    <li>Click "Generate Contract"</li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </div>
+                `;
+            } else {
+                const failedTests = testResults.filter(t => t.status === 'fail');
+                let fixes = '<ul>';
+                
+                failedTests.forEach(test => {
+                    if (test.name === 'Libraries Loaded') {
+                        fixes += '<li><strong>Libraries not loading:</strong> Refresh the page. Check your internet connection.</li>';
+                    } else if (test.name === 'Template File Exists') {
+                        fixes += '<li><strong>Template file missing:</strong> Make sure <code>ND FALL 2026 - CONTRACT - 9 Jan 2026 - 11 May 2026 (1).docx</code> is in the same folder as the HTML files.</li>';
+                    } else if (test.name === 'Generate Test Document') {
+                        fixes += '<li><strong>Document generation failed:</strong> Check the console (F12) for detailed error messages.</li>';
+                    }
+                });
+                
+                fixes += '</ul>';
+                
+                nextSteps.innerHTML = `
+                    <div class="info" style="background: #fff3cd; border-left-color: #ff9800;">
+                        <h3>⚠️ Issues Found</h3>
+                        <p><strong>Please fix the following:</strong></p>
+                        ${fixes}
+                        <p>After fixing, click "🔄 Reset" and run tests again.</p>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
+

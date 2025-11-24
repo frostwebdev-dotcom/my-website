@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Field Comparison - What's Missing?</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        .section {
+            background: white;
+            padding: 25px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .found {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+        .missing {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+        .field-name {
+            font-family: monospace;
+            font-weight: bold;
+            color: #1976d2;
+        }
+        h2 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .stats {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 Field Comparison</h1>
+        <p>What fields are in your template vs. what the form expects</p>
+    </div>
+
+    <div class="section">
+        <h2>📋 Your Template Has These 12 Fields:</h2>
+        <div class="found">✅ <span class="field-name">{property_address}</span></div>
+        <div class="found">✅ <span class="field-name">{landlord_phone}</span></div>
+        <div class="found">✅ <span class="field-name">{tenant_phone}</span></div>
+        <div class="found">✅ <span class="field-name">{landlord_name}</span></div>
+        <div class="found">✅ <span class="field-name">{tenant_email}</span></div>
+        <div class="found">✅ <span class="field-name">{landlord_address_italy}</span></div>
+        <div class="found">✅ <span class="field-name">{lease_start_date}</span></div>
+        <div class="found">✅ <span class="field-name">{total_nights}</span></div>
+        <div class="found">✅ <span class="field-name">{rent_per_night}</span></div>
+        <div class="found">✅ <span class="field-name">{landlord_address_usa}</span></div>
+        <div class="found">✅ <span class="field-name">{landlord_email}</span></div>
+        <div class="found">✅ <span class="field-name">{tenant_name}</span></div>
+    </div>
+
+    <div class="section">
+        <h2>❌ Your Template is MISSING These Fields:</h2>
+        
+        <h3>Dates:</h3>
+        <div class="missing">❌ <span class="field-name">{lease_end_date}</span> - End date of lease</div>
+        <div class="missing">❌ <span class="field-name">{contract_date}</span> - Date contract was created</div>
+        
+        <h3>Tenant Info:</h3>
+        <div class="missing">❌ <span class="field-name">{tenant_passport}</span> - Tenant's passport number</div>
+        <div class="missing">❌ <span class="field-name">{tenant_address}</span> - Tenant's home address</div>
+        
+        <h3>Property Details:</h3>
+        <div class="missing">❌ <span class="field-name">{property_type}</span> - Type of property (Apartment, House, etc.)</div>
+        <div class="missing">❌ <span class="field-name">{bedrooms}</span> - Number of bedrooms</div>
+        <div class="missing">❌ <span class="field-name">{bathrooms}</span> - Number of bathrooms</div>
+        <div class="missing">❌ <span class="field-name">{max_occupants}</span> - Maximum number of occupants</div>
+        
+        <h3>Payment:</h3>
+        <div class="missing">❌ <span class="field-name">{total_rent}</span> - Total rent amount</div>
+        <div class="missing">❌ <span class="field-name">{payment_method}</span> - How payment will be made</div>
+        <div class="missing">❌ <span class="field-name">{payment_due_date}</span> - When payment is due</div>
+        
+        <h3>Security Deposit:</h3>
+        <div class="missing">❌ <span class="field-name">{security_deposit}</span> - Deposit amount</div>
+        <div class="missing">❌ <span class="field-name">{deposit_due_date}</span> - When deposit is due</div>
+        <div class="missing">❌ <span class="field-name">{deposit_return_days}</span> - Days to return deposit</div>
+        
+        <h3>Utilities & Services:</h3>
+        <div class="missing">❌ <span class="field-name">{utilities_included}</span> - Are utilities included?</div>
+        <div class="missing">❌ <span class="field-name">{wifi_included}</span> - Is WiFi included?</div>
+        <div class="missing">❌ <span class="field-name">{parking_included}</span> - Is parking included?</div>
+        <div class="missing">❌ <span class="field-name">{cleaning_fee}</span> - Cleaning fee amount</div>
+        
+        <h3>Rules & Policies:</h3>
+        <div class="missing">❌ <span class="field-name">{pets_allowed}</span> - Are pets allowed?</div>
+        <div class="missing">❌ <span class="field-name">{smoking_allowed}</span> - Is smoking allowed?</div>
+        <div class="missing">❌ <span class="field-name">{quiet_hours}</span> - Quiet hours</div>
+        <div class="missing">❌ <span class="field-name">{additional_rules}</span> - Additional house rules</div>
+        
+        <h3>Emergency Contacts:</h3>
+        <div class="missing">❌ <span class="field-name">{emergency_contact_name}</span> - Emergency contact name</div>
+        <div class="missing">❌ <span class="field-name">{emergency_contact_phone}</span> - Emergency contact phone</div>
+        <div class="missing">❌ <span class="field-name">{emergency_contact_relation}</span> - Relationship to tenant</div>
+    </div>
+
+    <div class="stats">
+        <h2>📊 Statistics:</h2>
+        <p><strong>Fields in your template:</strong> 12 ✅</p>
+        <p><strong>Fields missing:</strong> 28 ❌</p>
+        <p><strong>Total fields needed:</strong> 40</p>
+        <p><strong>Completion:</strong> 30% (12/40)</p>
+    </div>
+
+    <div class="section">
+        <h2>🤔 Why Is the Generated Contract the Same as Original?</h2>
+        <div class="warning">
+            <p><strong>Answer:</strong> Because you only replaced 12 out of 40 fields!</p>
+            <p>The fields you DID replace (like <code>{landlord_name}</code>) ARE being filled correctly.</p>
+            <p>But the fields you DIDN'T replace (like <code>{lease_end_date}</code>) still show the original values.</p>
+            <p><strong>Result:</strong> The contract looks mostly the same because 70% of the data wasn't replaced with merge fields.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>✅ Solution - Two Options:</h2>
+        
+        <h3>Option 1: Add ALL Missing Fields (Recommended for full automation)</h3>
+        <p>Go through your Word template and replace ALL values with merge fields.</p>
+        <ul>
+            <li>Find: "11 May 2026" → Replace: <code>{lease_end_date}</code></li>
+            <li>Find: "$3,050" → Replace: <code>${total_rent}</code></li>
+            <li>Find: "$500" → Replace: <code>${security_deposit}</code></li>
+            <li>etc. for all 28 missing fields</li>
+        </ul>
+        
+        <h3>Option 2: Only Use the 12 Fields You Have (Simpler, less automation)</h3>
+        <p>Keep your template as is, and only fill in these 12 fields in the form:</p>
+        <ul>
+            <li>Landlord Name, Phone, Email, USA Address, Italy Address</li>
+            <li>Tenant Name, Phone, Email</li>
+            <li>Property Address</li>
+            <li>Lease Start Date, Total Nights, Rent Per Night</li>
+        </ul>
+        <p><strong>Note:</strong> You'll need to manually edit other values in the generated contract.</p>
+    </div>
+
+    <div class="section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+        <h2 style="color: white; border-bottom-color: white;">🎯 What to Do Next:</h2>
+        <ol style="font-size: 18px; line-height: 2;">
+            <li><strong>Decide:</strong> Do you want full automation (Option 1) or partial (Option 2)?</li>
+            <li><strong>If Option 1:</strong> Add the 28 missing merge fields to your Word template</li>
+            <li><strong>If Option 2:</strong> Test the contract generator now - it WILL work for the 12 fields you have!</li>
+        </ol>
+    </div>
+
+</body>
+</html>
+

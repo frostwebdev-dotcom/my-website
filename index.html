@@ -3,82 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contract</title>
+    <title>RomaRentals Contract Generator</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- pdf-lib for professional PDF generation -->
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <main>
-            <!-- Contract Selection Screen -->
-            <div id="selection-screen" class="screen active">
-                <h2>Select Contract Type</h2>
-                <p>Choose which type of contract you want to generate:</p>
-                <div class="contract-cards">
-                    <div class="contract-card" onclick="selectContract('group-contract')">
-                        <div class="card-icon">👥</div>
-                        <h3>Group Contract</h3>
-                        <p>Furnished premises rental for groups</p>
-                    </div>
-                    <div class="contract-card coming-soon">
-                        <div class="card-icon">🏪</div>
-                        <h3>Retail Contract</h3>
-                        <p>Coming soon...</p>
-                    </div>
-                    <div class="contract-card coming-soon">
-                        <div class="card-icon">⏱️</div>
-                        <h3>Short Term Contract</h3>
-                        <p>Coming soon...</p>
-                    </div>
-                </div>
+    <div class="app-container">
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="screen active">
+            <div class="card">
+                <h1>🏛️ RomaRentals Contract Generator</h1>
+                <p class="subtitle">Professional Rental Agreement System</p>
+                <p>Generate professional rental contracts matching your original PDF template exactly.</p>
+                <button onclick="startContract()" class="btn-primary">Start New Contract</button>
             </div>
+        </div>
 
-            <!-- Welcome Screen -->
-            <div id="welcome-screen" class="screen">
-                <h2 id="welcome-title">Contract Generator</h2>
-                <p>I'll ask you a few simple questions to fill in your contract.</p>
-                <p>All the legal text stays exactly the same - I just need the specific details for this rental.</p>
-                <div class="button-group">
-                    <button onclick="backToSelection()" class="btn-secondary">← Back to Contract Types</button>
-                    <button onclick="startContract()" class="btn-primary">Start Filling Contract</button>
-                </div>
-            </div>
-
-            <!-- Question Screen -->
-            <div id="question-screen" class="screen">
+        <!-- Form Screen -->
+        <div id="form-screen" class="screen">
+            <div class="card">
+                <h2>Contract Information</h2>
                 <div class="progress-bar">
-                    <div id="progress" class="progress-fill"></div>
+                    <div class="progress-fill" id="progress-fill"></div>
                 </div>
-                <div class="question-container">
-                    <h3 id="question-text"></h3>
-                    <p id="question-help" class="help-text"></p>
-                    <input type="text" id="answer-input" class="input-field" />
+                <p class="progress-text"><span id="current-step">1</span> of <span id="total-steps">18</span></p>
+
+                <form id="contract-form">
+                    <div id="form-fields"></div>
+
                     <div class="button-group">
-                        <button onclick="previousQuestion()" id="prev-btn" class="btn-secondary">Back</button>
-                        <button onclick="nextQuestion()" id="next-btn" class="btn-primary">Next</button>
+                        <button type="button" onclick="previousField()" id="prev-btn" class="btn-secondary" style="display:none;">Previous</button>
+                        <button type="button" onclick="nextField()" id="next-btn" class="btn-primary">Next</button>
+                        <button type="button" onclick="showReview()" id="review-btn" class="btn-primary" style="display:none;">Review</button>
                     </div>
-                </div>
+                </form>
             </div>
+        </div>
 
-            <!-- Review Screen -->
-            <div id="review-screen" class="screen">
+        <!-- Review Screen -->
+        <div id="review-screen" class="screen">
+            <div class="card">
                 <h2>Review Your Information</h2>
-                <div id="review-content" class="review-content"></div>
+                <p>Please review all information before generating the contract.</p>
+                <div id="review-content"></div>
                 <div class="button-group">
-                    <button onclick="editAnswers()" class="btn-secondary">Edit Answers</button>
-                    <button onclick="generateContract()" class="btn-primary">Generate Contract</button>
+                    <button onclick="backToForm()" class="btn-secondary">Edit Information</button>
+                    <button onclick="generateContract()" class="btn-primary">Generate PDF Contract</button>
                 </div>
             </div>
+        </div>
 
-            <!-- Contract Display Screen -->
-            <div id="contract-screen" class="screen">
-                <div id="contract-content" class="contract-content"></div>
+        <!-- Success Screen -->
+        <div id="success-screen" class="screen">
+            <div class="card">
+                <h2>✅ Contract Generated Successfully!</h2>
+                <p>Your PDF contract has been downloaded.</p>
+                <div class="success-message">
+                    <p>📄 <strong>File:</strong> RomaRentals_Contract_<span id="contract-date"></span>.pdf</p>
+                    <p>Professional formatting matching your original template exactly.</p>
+                </div>
                 <div class="button-group">
-                    <button onclick="printContract()" class="btn-secondary">Print Contract</button>
-                    <button onclick="downloadContract()" class="btn-primary">Download as PDF</button>
-                    <button onclick="startOver()" class="btn-secondary">Generate Another Contract</button>
+                    <button onclick="generateContract()" class="btn-secondary">Download Again</button>
+                    <button onclick="startOver()" class="btn-primary">Create Another Contract</button>
                 </div>
             </div>
-        </main>
+        </div>
     </div>
 
     <script src="contract-data.js"></script>

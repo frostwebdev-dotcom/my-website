@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Buttons</title>
+    <script src="https://unpkg.com/docx@7.8.2/build/index.js"></script>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+</head>
+<body>
+    <h1>Test Buttons</h1>
+    <button onclick="testDocx()">Test DOCX Generation</button>
+    <button onclick="testPdfLib()">Test PDF-Lib</button>
+    <div id="output"></div>
+    
+    <script>
+        async function testDocx() {
+            try {
+                console.log('Testing DOCX...');
+                console.log('window.docx object:', typeof window.docx);
+                console.log('Available globals:', Object.keys(window).filter(k => k.toLowerCase().includes('doc')));
+
+                if (typeof window.docx === 'undefined') {
+                    alert('ERROR: docx library not loaded!\n\nCheck console for details.');
+                    return;
+                }
+
+                const { Document, Packer, Paragraph, TextRun } = window.docx;
+                
+                const doc = new Document({
+                    sections: [{
+                        properties: {},
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({
+                                        text: 'Test Document',
+                                        bold: true
+                                    })
+                                ]
+                            })
+                        ]
+                    }]
+                });
+                
+                const blob = await Packer.toBlob(doc);
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'test.docx';
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                alert('DOCX generated successfully!');
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error: ' + error.message);
+            }
+        }
+        
+        async function testPdfLib() {
+            try {
+                console.log('Testing PDF-Lib...');
+                console.log('PDFLib object:', typeof PDFLib);
+                
+                if (typeof PDFLib === 'undefined') {
+                    alert('ERROR: PDFLib library not loaded!');
+                    return;
+                }
+                
+                const { PDFDocument, rgb } = PDFLib;
+                
+                const pdfDoc = await PDFDocument.create();
+                const page = pdfDoc.addPage([600, 400]);
+                
+                page.drawText('Test PDF', {
+                    x: 50,
+                    y: 350,
+                    size: 30,
+                    color: rgb(0, 0, 0)
+                });
+                
+                const pdfBytes = await pdfDoc.save();
+                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'test.pdf';
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                alert('PDF generated successfully!');
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
+
