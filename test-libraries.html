@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .status {
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+        .success { background: #d4edda; border: 2px solid #28a745; }
+        .error { background: #f8d7da; border: 2px solid #dc3545; }
+        .info { background: #d1ecf1; border: 2px solid #17a2b8; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Library Loading Test</h1>
+    
+    <div id="status" class="status info">
+        <p>Loading libraries...</p>
+    </div>
+    
+    <div id="details"></div>
+
+    <!-- Loading from local files -->
+    <script src="pizzip.js"></script>
+    <script src="docxtemplater.js"></script>
+
+    <script>
+        window.addEventListener('load', function() {
+            const statusDiv = document.getElementById('status');
+            const detailsDiv = document.getElementById('details');
+            
+            let html = '<h2>Library Status:</h2>';
+            let allLoaded = true;
+            
+            // Check PizZip
+            if (typeof PizZip !== 'undefined') {
+                html += '<p class="success">✅ PizZip is loaded!</p>';
+                html += '<p>Type: ' + typeof PizZip + '</p>';
+                html += '<p>Constructor: ' + (PizZip.toString().substring(0, 100)) + '...</p>';
+            } else {
+                html += '<p class="error">❌ PizZip is NOT loaded!</p>';
+                allLoaded = false;
+            }
+            
+            // Check Docxtemplater
+            const DocxTemplater = typeof Docxtemplater !== 'undefined' ? Docxtemplater : 
+                                  typeof docxtemplater !== 'undefined' ? docxtemplater : undefined;
+            
+            if (DocxTemplater) {
+                html += '<p class="success">✅ Docxtemplater is loaded!</p>';
+                html += '<p>Type: ' + typeof DocxTemplater + '</p>';
+            } else {
+                html += '<p class="error">❌ Docxtemplater is NOT loaded!</p>';
+                allLoaded = false;
+            }
+            
+            detailsDiv.innerHTML = html;
+            
+            if (allLoaded) {
+                statusDiv.className = 'status success';
+                statusDiv.innerHTML = '<h2>✅ All libraries loaded successfully!</h2><p>You can use the contract generator.</p>';
+            } else {
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = '<h2>❌ Some libraries failed to load!</h2><p>Check your internet connection or try a different browser.</p>';
+            }
+        });
+        
+        // Also check for script errors
+        window.addEventListener('error', function(e) {
+            console.error('Script error:', e);
+            const detailsDiv = document.getElementById('details');
+            detailsDiv.innerHTML += '<p class="error">Script error: ' + e.message + '</p>';
+        });
+    </script>
+</body>
+</html>
+

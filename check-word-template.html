@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Word Template</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .error { background: #fee; border-color: #c00; color: #c00; }
+        .success { background: #efe; border-color: #0c0; color: #060; }
+        .warning { background: #ffc; border-color: #cc0; color: #660; }
+        .info { background: #eef; border-color: #00c; }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover { background: #0056b3; }
+        pre {
+            background: #f5f5f5;
+            padding: 10px;
+            overflow-x: auto;
+            max-height: 400px;
+            border: 1px solid #ddd;
+        }
+        .field-list {
+            list-style: none;
+            padding: 0;
+        }
+        .field-list li {
+            padding: 5px;
+            margin: 3px 0;
+            background: #f9f9f9;
+            border-left: 3px solid #007bff;
+            padding-left: 10px;
+        }
+        .field-error {
+            border-left-color: #c00;
+            background: #fee;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Word Template Checker</h1>
+    
+    <div class="section info">
+        <h2>Check Your Template for Errors</h2>
+        <p>This tool will scan your Word template and find any problems with merge fields.</p>
+        <button onclick="checkTemplate()">🔍 Check Template</button>
+    </div>
+    
+    <div id="results"></div>
+
+    <script src="pizzip.js"></script>
+    <script src="docxtemplater.js"></script>
+
+    <script>
+        async function checkTemplate() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<div class="section info"><p>Checking template...</p></div>';
+            
+            try {
+                // Load template
+                const response = await fetch('ND FALL 2026 - CONTRACT - 9 Jan 2026 - 11 May 2026 (1).docx');
+                if (!response.ok) {
+                    throw new Error('Template file not found');
+                }
+                
+                const templateBuffer = await response.arrayBuffer();
+                const zip = new PizZip(templateBuffer);
+                
+                // Extract document.xml to see the raw content
+                const documentXml = zip.file('word/document.xml').asText();
+                
+                // Find all merge fields
+                const fieldRegex = /\{([^}]*)/g;
+                const closingRegex = /([^{]*)\}/g;
+                
+                let matches = [];
+                let match;
+                
+                // Find opening braces
+                while ((match = fieldRegex.exec(documentXml)) !== null) {
+                    matches.push({
+                        type: 'opening',
+                        content: match[1],
+                        position: match.index,
+                        full: match[0]
+                    });
+                }
+                
+                // Find closing braces
+                closingRegex.lastIndex = 0;
+                while ((match = closingRegex.exec(documentXml)) !== null) {
+                    if (match[0].includes('}')) {
+                        matches.push({
+                            type: 'closing',
+                            content: match[1],
+                            position: match.index,
+                            full: match[0]
+                        });
+                    }
+                }
+                
+                // Try to create Docxtemplater to get actual errors
+                let docErrors = [];
+                try {
+                    const doc = new Docxtemplater(zip, {
+                        paragraphLoop: true,
+                        linebreaks: true,
+                    });
+                } catch (error) {
+                    if (error.properties && error.properties.errors) {
+                        docErrors = error.properties.errors;
+                    }
+                }
+                
+                // Display results
+                let html = '';
+                
+                if (docErrors.length > 0) {
+                    html += '<div class="section error">';
+                    html += '<h2>❌ Template Errors Found!</h2>';
+                    html += '<p><strong>Your template has ' + docErrors.length + ' error(s):</strong></p>';
+                    html += '<ul>';
+                    
+                    docErrors.forEach((err, index) => {
+                        html += '<li><strong>Error ' + (index + 1) + ':</strong> ' + err.message;
+                        if (err.properties) {
+                            html += '<br><small>Details: ' + JSON.stringify(err.properties) + '</small>';
+                        }
+                        html += '</li>';
+                    });
+                    
+                    html += '</ul>';
+                    html += '<h3>🔧 How to Fix:</h3>';
+                    html += '<ol>';
+                    html += '<li>Open your Word template: <code>ND FALL 2026 - CONTRACT - 9 Jan 2026 - 11 May 2026 (1).docx</code></li>';
+                    html += '<li>Press <kbd>Ctrl + F</kbd> to open Find</li>';
+                    html += '<li>Search for: <code>{</code> (opening brace)</li>';
+                    html += '<li>Check each merge field has matching <code>}</code> (closing brace)</li>';
+                    html += '<li>Common problems:</li>';
+                    html += '<ul>';
+                    html += '<li>Missing closing brace: <code>{field_name</code> ← WRONG</li>';
+                    html += '<li>Missing opening brace: <code>field_name}</code> ← WRONG</li>';
+                    html += '<li>Extra spaces: <code>{ field_name }</code> ← WRONG</li>';
+                    html += '<li>Correct format: <code>{field_name}</code> ← CORRECT</li>';
+                    html += '</ul>';
+                    html += '</ol>';
+                    html += '</div>';
+                    
+                } else {
+                    html += '<div class="section success">';
+                    html += '<h2>✅ No Errors Found!</h2>';
+                    html += '<p>Your template structure looks good!</p>';
+                    html += '</div>';
+                }
+                
+                // Show raw field analysis
+                html += '<div class="section info">';
+                html += '<h3>📋 Merge Fields Found in Template:</h3>';
+                html += '<p>Searching for patterns like <code>{field_name}</code>...</p>';
+                
+                // Extract complete fields
+                const completeFieldRegex = /\{([a-zA-Z0-9_]+)\}/g;
+                const completeFields = [];
+                while ((match = completeFieldRegex.exec(documentXml)) !== null) {
+                    completeFields.push(match[1]);
+                }
+                
+                if (completeFields.length > 0) {
+                    html += '<p><strong>Found ' + completeFields.length + ' complete merge fields:</strong></p>';
+                    html += '<ul class="field-list">';
+                    completeFields.forEach(field => {
+                        html += '<li>{' + field + '}</li>';
+                    });
+                    html += '</ul>';
+                } else {
+                    html += '<p class="warning">⚠️ No complete merge fields found! Your template might not have any {field_name} placeholders yet.</p>';
+                }
+                
+                html += '</div>';
+                
+                resultsDiv.innerHTML = html;
+                
+            } catch (error) {
+                resultsDiv.innerHTML = '<div class="section error"><h2>❌ Error</h2><p>' + error.message + '</p></div>';
+            }
+        }
+    </script>
+</body>
+</html>
+

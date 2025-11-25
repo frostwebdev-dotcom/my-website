@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnose Template - Show Exact Merge Fields</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        .section {
+            background: white;
+            padding: 25px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #output {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 600px;
+            overflow-y: auto;
+            margin-top: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .merge-field {
+            background: #51cf66;
+            color: #000;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        .highlight {
+            background: yellow;
+            color: black;
+            padding: 2px 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔍 Template Diagnosis - Show Exact Content</h1>
+        <p>Upload your Word template to see EXACTLY what's in it</p>
+    </div>
+
+    <div class="section">
+        <h2>📤 Upload Your Word Template</h2>
+        <div class="upload-area" id="uploadArea">
+            <h3>📁 Drag & Drop Your Word File Here</h3>
+            <p>or</p>
+            <input type="file" id="fileInput" accept=".docx" style="display: none;">
+            <button onclick="document.getElementById('fileInput').click()">📂 Choose File</button>
+        </div>
+        <p id="fileName" style="margin-top: 10px; font-weight: bold;"></p>
+        <button id="analyzeBtn" onclick="analyzeTemplate()" style="display: none;">🔍 Analyze Template</button>
+    </div>
+
+    <div class="section" id="resultsSection" style="display: none;">
+        <h2>📊 Analysis Results</h2>
+        <div id="results"></div>
+        <h3>📄 Full Template Content (First 500 Lines):</h3>
+        <div id="output"></div>
+    </div>
+
+    <script src="https://unpkg.com/pizzip@3.1.6/dist/pizzip.js"></script>
+    
+    <script>
+        let templateFile = null;
+
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const fileName = document.getElementById('fileName');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const resultsSection = document.getElementById('resultsSection');
+        const results = document.getElementById('results');
+        const output = document.getElementById('output');
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        function handleFile(file) {
+            if (!file.name.endsWith('.docx')) {
+                alert('❌ Please upload a .docx file');
+                return;
+            }
+            templateFile = file;
+            fileName.textContent = '📄 File: ' + file.name;
+            analyzeBtn.style.display = 'inline-block';
+        }
+
+        async function analyzeTemplate() {
+            if (!templateFile) return;
+
+            if (typeof PizZip === 'undefined') {
+                alert('❌ PizZip library not loaded. Please refresh the page.');
+                return;
+            }
+
+            try {
+                const arrayBuffer = await templateFile.arrayBuffer();
+                const zip = new PizZip(arrayBuffer);
+                const documentXml = zip.file('word/document.xml').asText();
+
+                // Extract all text with merge fields highlighted
+                const textMatches = documentXml.match(/<w:t[^>]*>([^<]+)<\/w:t>/g);
+                
+                if (!textMatches) {
+                    results.innerHTML = '<div style="color: red;">❌ Could not extract text</div>';
+                    return;
+                }
+
+                const fullText = textMatches
+                    .map(match => match.replace(/<w:t[^>]*>([^<]+)<\/w:t>/, '$1'))
+                    .join(' ');
+
+                // Find all merge fields
+                const mergeFieldPattern = /\{[a-z_0-9]+\}/gi;
+                const mergeFields = fullText.match(mergeFieldPattern);
+
+                // Highlight merge fields in output
+                let highlightedText = fullText;
+                if (mergeFields) {
+                    mergeFields.forEach(field => {
+                        const regex = new RegExp(field.replace(/[{}]/g, '\\$&'), 'g');
+                        highlightedText = highlightedText.replace(regex, `<span class="highlight">${field}</span>`);
+                    });
+                }
+
+                // Show results
+                if (mergeFields && mergeFields.length > 0) {
+                    const uniqueFields = [...new Set(mergeFields)];
+                    results.innerHTML = `
+                        <div style="background: #d4edda; padding: 15px; border-radius: 8px;">
+                            <h3>✅ Found ${uniqueFields.length} Merge Fields:</h3>
+                            <ul>
+                                ${uniqueFields.map(field => `<li><span class="merge-field">${field}</span></li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                } else {
+                    results.innerHTML = `
+                        <div style="background: #f8d7da; padding: 15px; border-radius: 8px;">
+                            <h3>❌ No Merge Fields Found!</h3>
+                        </div>
+                    `;
+                }
+
+                // Show full text with highlighted merge fields
+                output.innerHTML = highlightedText;
+                resultsSection.style.display = 'block';
+
+            } catch (error) {
+                console.error('Error:', error);
+                results.innerHTML = `<div style="color: red;">❌ Error: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>
+
