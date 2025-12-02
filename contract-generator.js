@@ -72,7 +72,7 @@ const contractFields = {
     
     'Rent & Payment': [
         { id: 'rent_per_student_per_night', label: 'Rent Per Student Per Night (Euro)', type: 'number', required: true, help: 'e.g., 80.00' },
-        { id: 'rent_series', label: 'Rent Series (Euro)', type: 'number', required: true, help: 'e.g., 122' },
+        { id: 'rent_series', label: 'Rent Series (Euro)', type: 'number', required: true, help: 'Total number of nights in the lease period (e.g., 122 nights)' },
         { id: 'total_rent', label: 'Total Rent', type: 'number', calculated: true, help: 'Auto-calculated' },
         { id: 'payment_method', label: 'Payment Method', type: 'select', options: ['Bank Transfer', 'Credit Card', 'PayPal', 'Cash', 'Check'], required: true },
         { id: 'payment_due_date', label: 'Payment Due Date', type: 'date', required: true },
@@ -87,7 +87,6 @@ const contractFields = {
     'Utilities & Costs': [
         { id: 'electricity_rate_per_m2', label: 'Electricity Rate (€ per m²)', type: 'number', required: true, help: 'e.g., 0.50' },
         { id: 'gas_rate_per_m2', label: 'Gas Rate (€ per m²)', type: 'number', required: true, help: 'e.g., 1.48' },
-        { id: 'utility_payment_days', label: 'Utility Payment Period (days)', type: 'number', required: true, help: 'e.g., 44 days' },
         { id: 'wifi_provided', label: 'WiFi Provided', type: 'select', options: ['Yes - Included', 'Yes - Additional Cost', 'No'], required: true },
         { id: 'wifi_cost', label: 'WiFi Cost (if applicable)', type: 'number', required: false, help: 'Monthly WiFi cost' },
         { id: 'cleaning_included', label: 'Cleaning Included', type: 'select', options: ['Yes - Included', 'Yes - Additional Cost', 'No'], required: true },
